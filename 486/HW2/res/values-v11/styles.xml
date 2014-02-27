@@ -1,0 +1,23 @@
+<resources>
+
+    <!--
+        Base application theme for API 11+. This theme completely replaces
+        AppBaseTheme from res/values/styles.xml on API 11+ devices.
+    -->
+    <style name="AppBaseTheme" parent="@style/Theme.AppCompat.Light">
+        <!-- API 11 theme customizations can go here. -->
+        <item name="ic_create_contact" >
+            @drawable/ic_create_contact_light
+        </item>
+        <item name="ic_cancel" >
+            @drawable/ic_cancel_light
+        </item>
+        <item name="ic_done" >
+            @drawable/ic_done_light
+        </item>
+        <item name="ic_edit" >
+            @drawable/ic_edit_light
+        </item>
+    </style>
+
+</resources>
