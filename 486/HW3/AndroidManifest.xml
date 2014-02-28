@@ -14,7 +14,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="jagodzinski.steve.hw3.ContactListActivity"
+            android:name="jagodzinski.steve.hw3.contact.ContactListActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="jagodzinski.steve.hw3.EditActivity"
+            android:name="jagodzinski.steve.hw3.contact.EditActivity"
             android:label="@string/title_activity_edit" >
         </activity>
         <activity android:label="Display Activity" android:name="DisplayActivity">

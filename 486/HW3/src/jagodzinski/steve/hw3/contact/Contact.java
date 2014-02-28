@@ -1,4 +1,4 @@
-package jagodzinski.steve.hw3;
+package jagodzinski.steve.hw3.contact;
 
 import java.util.Date;
 
