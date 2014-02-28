@@ -1,0 +1,18 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:yourapp="http://schemas.android.com/apk/res-auto" >
+
+    <item
+        android:id="@+id/action_done"
+        android:orderInCategory="100"
+        yourapp:showAsAction="always"
+        android:icon="?attr/ic_done"
+        android:title="@string/done"/>
+    
+    <item
+        android:id="@+id/action_canel"
+        android:orderInCategory="100"
+        yourapp:showAsAction="always"
+        android:icon="?attr/ic_cancel"
+        android:title="@string/cancel"/>
+
+</menu>
