@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="jagodzinski.steve.hw2"
+    package="jagodzinski.steve.hw3"
     android:versionCode="1"
     android:versionName="1.0" >
 
     <uses-sdk
         android:minSdkVersion="10"
-        android:targetSdkVersion="18" />
+        android:targetSdkVersion="19" />
 
     <application
         android:allowBackup="true"
@@ -26,13 +26,16 @@
             android:name="jagodzinski.steve.hw3.contact.EditActivity"
             android:label="@string/title_activity_edit" >
         </activity>
-        <activity android:label="Display Activity" android:name="DisplayActivity">
+        <activity android:label="Display Activity" android:name="jagodzinski.steve.hw3.contact.DisplayActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="application/vnd.jagodzinski.steve.hw2.Contact" />
+                <data android:mimeType="application/vnd.jagodzinski.steve.hw3.Contact" />
             </intent-filter>
         </activity>
+        <provider android:name="jagodzinski.steve.hw3.contact.ContactContentProvider"
+            android:authorities="jagodzinski.steve.hw3"
+            android:exported="false"/>
     </application>
 
 </manifest>

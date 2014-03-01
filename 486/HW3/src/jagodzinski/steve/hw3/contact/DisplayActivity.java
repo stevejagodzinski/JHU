@@ -1,6 +1,6 @@
 package jagodzinski.steve.hw3.contact;
 
-import jagodzinski.steve.hw2.R;
+import jagodzinski.steve.hw3.R;
 
 import java.text.SimpleDateFormat;
 
@@ -51,7 +51,7 @@ public class DisplayActivity extends ActionBarActivity {
 	}
 
 	private void setContact(Intent intent) {
-		contact = intent.getParcelableExtra("contact");
+		contact = ContactContentProvider.findContact(this, getIntent().getExtras().getLong("contactId"));
 	}
 
 	private void populateTextFields() {
@@ -62,8 +62,7 @@ public class DisplayActivity extends ActionBarActivity {
 		workPhone.setText(contact.getWorkPhone());
 		mobilePhone.setText(contact.getMobilePhone());
 		email.setText(contact.getEmailAddress());
-		birthday.setText(contact.getBirthday() == null ? null : dateFormat.format(contact
-				.getBirthday()));
+		birthday.setText(contact.getBirthday());
 	}
 
 	@Override
@@ -91,7 +90,7 @@ public class DisplayActivity extends ActionBarActivity {
 
 	private void showEditContactActivity() {
 		Intent intent = new Intent(this, EditActivity.class);
-		intent.putExtra("contact", getIntent().getParcelableExtra("contact"));
+		intent.putExtra("contactId", getIntent().getExtras().getLong("contactId"));
 		startActivityForResult(intent, EDIT_CONTACT_REQUEST_CODE);
 	}
 
@@ -102,12 +101,4 @@ public class DisplayActivity extends ActionBarActivity {
 		}
 	}
 
-	@Override
-	public void onBackPressed() {
-		Intent intent = new Intent();
-		intent.putExtra("contact", contact);
-
-		setResult(RESULT_CANCELED, intent);
-		super.onBackPressed();
-	}
 }

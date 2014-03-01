@@ -1,13 +1,11 @@
 package jagodzinski.steve.hw3.contact;
 
-import jagodzinski.steve.hw2.R;
+import jagodzinski.steve.hw3.R;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -15,6 +13,8 @@ import android.widget.EditText;
 public class EditActivity extends ActionBarActivity {
 
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+
+	private Contact contact;
 
 	private EditText displayName;
 	private EditText firstName;
@@ -50,7 +50,18 @@ public class EditActivity extends ActionBarActivity {
 	}
 
 	private void populateFromIntent() {
-		Contact contact = getIntent().getParcelableExtra("contact");
+		long contactId = getIntent().getExtras().getLong("contactId");
+
+		if (contactId == -1) {
+			contact = Contact.newInstance();
+		} else {
+			contact = ContactContentProvider.findContact(this, contactId);
+		}
+
+		populateUIFromContact();
+	}
+
+	private void populateUIFromContact() {
 		displayName.setText(contact.getDisplayName());
 		firstName.setText(contact.getFirstName());
 		lastName.setText(contact.getLastName());
@@ -58,8 +69,7 @@ public class EditActivity extends ActionBarActivity {
 		workPhone.setText(contact.getWorkPhone());
 		mobilePhone.setText(contact.getMobilePhone());
 		email.setText(contact.getEmailAddress());
-		birthday.setText(contact.getBirthday() == null ? null : dateFormat.format(contact
-				.getBirthday()));
+		birthday.setText(contact.getBirthday());
 	}
 
 	@Override
@@ -72,10 +82,12 @@ public class EditActivity extends ActionBarActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		boolean success;
-		
+
 		switch (item.getItemId()) {
 			case R.id.action_done:
 				bindContactFields();
+				ContactContentProvider.updateContact(this, contact);
+				getIntent().putExtra("contactId", this.contact.getId());
 				setResult(RESULT_OK, getIntent());
 				success = true;
 				break;
@@ -93,7 +105,6 @@ public class EditActivity extends ActionBarActivity {
 	}
 
 	private void bindContactFields() {
-		Contact contact = getIntent().getParcelableExtra("contact");
 		contact.setDisplayName(displayName.getText().toString());
 		contact.setEmailAddress(email.getText().toString());
 		contact.setFirstName(firstName.getText().toString());
@@ -101,12 +112,6 @@ public class EditActivity extends ActionBarActivity {
 		contact.setHomePhone(homePhone.getText().toString());
 		contact.setMobilePhone(mobilePhone.getText().toString());
 		contact.setWorkPhone(workPhone.getText().toString());
-
-		try {
-			contact.setBirthday(dateFormat.parse(birthday.getText().toString()));
-		} catch (ParseException e) {
-			Log.i("Date Format", "User has entered an invalid date format.", e);
-		}
+		contact.setBirthday(birthday.getText().toString());
 	}
-
 }

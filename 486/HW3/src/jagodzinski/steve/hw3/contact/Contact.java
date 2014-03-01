@@ -1,24 +1,41 @@
 package jagodzinski.steve.hw3.contact;
 
-import java.util.Date;
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Contact implements Parcelable {
-	private long id;
+	private long id = -1;
 	private String displayName;
 	private String firstName;
 	private String lastName;
-	private Date birthday;
+	private String birthday;
 	private String homePhone;
 	private String workPhone;
 	private String mobilePhone;
 	private String emailAddress;
-
-	public Contact(final long id) {
-		this.id = id;
+	
+	static Contact newInstance(final long id, final String displayName, final String firstName, 
+ final String lastName,
+			final String birthday, final String homePhone, final String workPhone,
+			final String mobilePhone, final String emailAddress) {
+		Contact instance = newInstance();
+		instance.setId(id);
+		instance.setDisplayName(displayName);
+		instance.setFirstName(firstName);
+		instance.setLastName(lastName);
+		instance.setBirthday(birthday);
+		instance.setHomePhone(homePhone);
+		instance.setWorkPhone(workPhone);
+		instance.setMobilePhone(mobilePhone);
+		instance.setEmailAddress(emailAddress);
+		return instance;
 	}
+	
+	static Contact newInstance() {
+		return new Contact();
+	}
+
+	private Contact() {}
 
 	public long getId() {
 		return id;
@@ -44,11 +61,11 @@ public class Contact implements Parcelable {
 		this.firstName = firstName;
 	}
 
-	public Date getBirthday() {
+	public String getBirthday() {
 		return birthday;
 	}
 
-	public void setBirthday(Date birthday) {
+	public void setBirthday(String birthday) {
 		this.birthday = birthday;
 	}
 
@@ -108,7 +125,7 @@ public class Contact implements Parcelable {
 		dest.writeString(mobilePhone);
 		dest.writeString(emailAddress);
 		dest.writeString(lastName);
-		dest.writeLong(birthday == null ? Long.MIN_VALUE : birthday.getTime());
+		dest.writeString(birthday);
 	}
 
 	public static final Parcelable.Creator<Contact> CREATOR = new Parcelable.Creator<Contact>() {
@@ -130,8 +147,6 @@ public class Contact implements Parcelable {
 		mobilePhone = in.readString();
 		emailAddress = in.readString();
 		lastName = in.readString();
-
-		long birthday = in.readLong();
-		this.birthday = birthday == Long.MIN_VALUE ? null : new Date(birthday);
+		birthday = in.readString();
 	}
 }
