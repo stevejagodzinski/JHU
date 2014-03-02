@@ -31,4 +31,15 @@
 	    android:paddingTop="@dimen/activity_vertical_margin"
 	    android:name="jagodzinski.steve.hw3.contact.DisplayFragment" />
 	
+	<fragment 
+	    android:id="@+id/edit_fragment"
+	    android:layout_width="0dp"
+	    android:layout_height="match_parent"
+	    android:layout_weight="1"
+	    android:paddingBottom="@dimen/activity_vertical_margin"
+	    android:paddingLeft="@dimen/activity_horizontal_margin"
+	    android:paddingRight="@dimen/activity_horizontal_margin"
+	    android:paddingTop="@dimen/activity_vertical_margin"
+	    android:name="jagodzinski.steve.hw3.contact.EditFragment" />
+	
 </LinearLayout>
