@@ -5,10 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 
-public class DisplayActivity extends ActionBarActivity implements DisplayFragmentListener {
+public class DisplayActivity extends ActionBarActivity implements DisplayFragmentListener, ContactListFragmentListener {
 
 	private static final int EDIT_CONTACT_REQUEST_CODE = 2;
 
+	private ContactListFragment contactListFragment;
 	private DisplayFragment displayFragment;
 
 	@Override
@@ -17,6 +18,16 @@ public class DisplayActivity extends ActionBarActivity implements DisplayFragmen
 
 		setContentView(R.layout.activity_display);
 		initializeDisplayFragment();
+		initializeContactlistFragment();
+	}
+
+	private void initializeContactlistFragment() {
+		contactListFragment = (ContactListFragment) getSupportFragmentManager().findFragmentById(
+				R.id.contact_list_fragment);
+
+		if (contactListFragment != null) {
+			contactListFragment.setFragmentListner(this);
+		}
 	}
 
 	private void initializeDisplayFragment() {
@@ -44,5 +55,25 @@ public class DisplayActivity extends ActionBarActivity implements DisplayFragmen
 	@Override
 	public void onEdit(final long contactId) {
 		showEditContactActivity(contactId);
+	}
+
+	@Override
+	public void onView(long contactId) {
+		showSelectedContactInDisplayFragment(contactId);
+	}
+
+	private void showSelectedContactInDisplayFragment(final long selectedContactId) {
+		displayFragment.setContactId(selectedContactId);
+	}
+
+	@Override
+	public void onCreate() {
+		showCreateContactActivity();
+	}
+
+	private void showCreateContactActivity() {
+		Intent intent = new Intent(this, EditActivity.class);
+		intent.putExtra("contactId", -1l);
+		startActivity(intent);
 	}
 }
