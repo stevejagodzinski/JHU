@@ -1,8 +1,10 @@
 package jagodzinski.steve.hw3.contact;
 
 import jagodzinski.steve.hw3.R;
+import jagodzinski.steve.hw3.contact.DatePickerDialogFragment.OnDatePickerDialogFragmentDateSetListener;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,25 +13,32 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
-public class EditFragment extends Fragment {
+public class EditFragment extends Fragment implements OnDatePickerDialogFragmentDateSetListener {
 
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+
+	private static final int DATE_ID_BIRTHDAY = 1;
 
 	private EditFragmentListener fragmentListener;
 
 	private Contact contact;
 
-	private EditText displayName;
-	private EditText firstName;
-	private EditText lastName;
-	private EditText birthday;
-	private EditText homePhone;
-	private EditText workPhone;
-	private EditText mobilePhone;
-	private EditText email;
+	private Calendar birthdayCalendar;
+
+	private EditText displayNameEditText;
+	private EditText firstNameEditText;
+	private EditText lastNameEditText;
+	private Button birthdayButton;
+	private EditText homePhoneEditText;
+	private EditText workPhoneEditText;
+	private EditText mobilePhoneEditText;
+	private EditText emailEditText;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -38,24 +47,35 @@ public class EditFragment extends Fragment {
 		setHasOptionsMenu(true);
 
 		cacheEditTextFields(view);
-		addBirthdayFormatHint();
+		showDatePickerDialogOnBirthdayButtonClick();
 
 		return view;
 	}
 
-	private void addBirthdayFormatHint() {
-		birthday.setHint(dateFormat.toPattern());
+	private void showDatePickerDialogOnBirthdayButtonClick() {
+		birthdayButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				showDatePickerDialog();
+			}
+		});
+	}
+
+	private void showDatePickerDialog() {
+		DatePickerDialogFragment fragment = DatePickerDialogFragment.create(EditFragment.this, DATE_ID_BIRTHDAY,
+				birthdayCalendar == null ? Calendar.getInstance() : birthdayCalendar);
+		fragment.show(getActivity().getSupportFragmentManager(), "setting birthday");
 	}
 
 	private void cacheEditTextFields(final View view) {
-		displayName = (EditText) view.findViewById(R.id.display_name);
-		firstName = (EditText) view.findViewById(R.id.first_name);
-		lastName = (EditText) view.findViewById(R.id.last_name);
-		birthday = (EditText) view.findViewById(R.id.birthday);
-		homePhone = (EditText) view.findViewById(R.id.home_phone);
-		workPhone = (EditText) view.findViewById(R.id.work_phone);
-		mobilePhone = (EditText) view.findViewById(R.id.mobile_phone);
-		email = (EditText) view.findViewById(R.id.email_address);
+		displayNameEditText = (EditText) view.findViewById(R.id.display_name);
+		firstNameEditText = (EditText) view.findViewById(R.id.first_name);
+		lastNameEditText = (EditText) view.findViewById(R.id.last_name);
+		birthdayButton = (Button) view.findViewById(R.id.birthday);
+		homePhoneEditText = (EditText) view.findViewById(R.id.home_phone);
+		workPhoneEditText = (EditText) view.findViewById(R.id.work_phone);
+		mobilePhoneEditText = (EditText) view.findViewById(R.id.mobile_phone);
+		emailEditText = (EditText) view.findViewById(R.id.email_address);
 	}
 
 	public void setContactId(final long contactId) {
@@ -69,14 +89,14 @@ public class EditFragment extends Fragment {
 	}
 
 	private void populateUIFromContact() {
-		displayName.setText(contact.getDisplayName());
-		firstName.setText(contact.getFirstName());
-		lastName.setText(contact.getLastName());
-		homePhone.setText(contact.getHomePhone());
-		workPhone.setText(contact.getWorkPhone());
-		mobilePhone.setText(contact.getMobilePhone());
-		email.setText(contact.getEmailAddress());
-		birthday.setText(contact.getBirthday());
+		displayNameEditText.setText(contact.getDisplayName());
+		firstNameEditText.setText(contact.getFirstName());
+		lastNameEditText.setText(contact.getLastName());
+		homePhoneEditText.setText(contact.getHomePhone());
+		workPhoneEditText.setText(contact.getWorkPhone());
+		mobilePhoneEditText.setText(contact.getMobilePhone());
+		emailEditText.setText(contact.getEmailAddress());
+		birthdayButton.setText(contact.getBirthday());
 	}
 
 	@Override
@@ -108,17 +128,42 @@ public class EditFragment extends Fragment {
 	}
 
 	private void bindContactFields() {
-		contact.setDisplayName(displayName.getText().toString());
-		contact.setEmailAddress(email.getText().toString());
-		contact.setFirstName(firstName.getText().toString());
-		contact.setLastName(lastName.getText().toString());
-		contact.setHomePhone(homePhone.getText().toString());
-		contact.setMobilePhone(mobilePhone.getText().toString());
-		contact.setWorkPhone(workPhone.getText().toString());
-		contact.setBirthday(birthday.getText().toString());
+		contact.setDisplayName(displayNameEditText.getText().toString());
+		contact.setEmailAddress(emailEditText.getText().toString());
+		contact.setFirstName(firstNameEditText.getText().toString());
+		contact.setLastName(lastNameEditText.getText().toString());
+		contact.setHomePhone(homePhoneEditText.getText().toString());
+		contact.setMobilePhone(mobilePhoneEditText.getText().toString());
+		contact.setWorkPhone(workPhoneEditText.getText().toString());
+		contact.setBirthday(birthdayButton.getText().toString());
 	}
 
 	public void setFragmentListener(final EditFragmentListener fragmentListener) {
 		this.fragmentListener = fragmentListener;
+	}
+
+	@Override
+	public void onDateSet(int dateId, int year, int month, int day) {
+		switch (dateId) {
+			case DATE_ID_BIRTHDAY:
+				updateBirthdayCalendar(year, month, day);
+				updateDateButtonText("Birthday", birthdayButton, birthdayCalendar);
+				break;
+			default:
+				throw new IllegalArgumentException(String.format("Unexpected dateId: %d", dateId));
+		}
+	}
+
+	private void updateBirthdayCalendar(int year, int month, int day) {
+		if (birthdayCalendar == null) {
+			birthdayCalendar = Calendar.getInstance();
+		}
+
+		birthdayCalendar.set(year, month, day);
+	}
+
+	private void updateDateButtonText(String header, TextView button, Calendar calendar) {
+		String text = dateFormat.format(calendar.getTime());
+		button.setText(text);
 	}
 }
