@@ -1,9 +1,6 @@
 package jagodzinski.steve.hw3.contact;
 
 import jagodzinski.steve.hw3.R;
-
-import java.text.SimpleDateFormat;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -14,8 +11,6 @@ import android.widget.TextView;
 public class DisplayActivity extends ActionBarActivity {
 
 	private static final int EDIT_CONTACT_REQUEST_CODE = 2;
-
-	private SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 
 	private Contact contact;
 
