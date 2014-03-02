@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>Ajax Basics: Part I</title>
+    <link rel="stylesheet"
+          href="./css/sjagodz13_styles.css"
+          type="text/css"/>
+    <script src="./scripts/sjagodz13_ajax.js"
+            type="text/javascript"></script>
+</head>
+<body>
+<div align="center">
+    <table border="5">
+        <tr><th class="title">Steve Jagodzinski</th></tr>
+    </table>
+    <p/>
+    <fieldset>
+        <legend>Customer Alert</legend>
+        <form>
+            <input type="button" value="Show customer with highest balance in alert box." onclick="ajaxAlert('GetHighestBalanceCustomerForAlert')"/>
+        </form>
+    </fieldset>
+    <p/>
+    <fieldset>
+        <legend>Customer List</legend>
+        <form>
+            <input type="button" value="Show customer with highest balance in list." onclick="ajaxResult('GetHighestBalanceCustomerForUnorderedList', 'customerList')"/>
+        </form>
+        <ul id="customerList" />
+    </fieldset>
+    <p/>
+    <fieldset>
+        <legend>Simulate Race Condition</legend>
+        <input type="button" value="Click me several times." onclick="sendAjaxRequestUsingSharedRequestObject()"/>
+        <div id="raceConditionResult"></div>
+    </fieldset>
+    <p/>
+</div>
+</body></html>
