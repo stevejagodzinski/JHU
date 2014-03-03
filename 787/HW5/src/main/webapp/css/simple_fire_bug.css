@@ -31,3 +31,25 @@
 	width: 50%;
 }
 
+.inputJS {
+	font-weight: bold;
+}
+
+textArea.simpleFireBug{
+   resize: none;
+   border: none;
+   overflow-y: scroll;
+}
+
+.hideRightBorder {
+	border-right: 0px !important;
+}
+
+.hideLeftBorder {
+	border-left: 0px !important;
+}
+
+table,th,td.simpleFireBug {
+	border:1px solid black;
+	border-collapse:collapse;
+}

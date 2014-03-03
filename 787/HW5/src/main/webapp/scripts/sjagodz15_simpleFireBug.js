@@ -3,10 +3,10 @@ function closeSimpleFireBug() {
 }
 
 function launchSimpleFireBug() { 
-	var htmlContent = "<table class='simpleFirebugFullWidth simpleFirebugFullHeight'>";
-	htmlContent = "<tr class='simpleFirebugFullHeight'>" + addInputArea(htmlContent);
+	var htmlContent = "<table class='simpleFireBug simpleFirebugFullWidth simpleFirebugFullHeight'>";
+	htmlContent = "<tr class='simpleFireBug simpleFirebugFullHeight'>" + addInputArea(htmlContent);
 	htmlContent = addOutputArea(htmlContent) + "</tr>";
-	htmlContent = "<tr>" + addButtons(htmlContent) + "</tr>" ;
+	htmlContent = "<tr class='simpleFireBug'>" + addButtons(htmlContent) + "</tr>" ;
 	htmlContent += "</table>";
 	
 	var simpleFireBugDiv = document.getElementById('simpleFireBugDiv');
@@ -15,31 +15,46 @@ function launchSimpleFireBug() {
 }
 
 function addInputArea(htmlContent) {
-	return htmlContent + '<td colspan="2" class="simpleFirebugSplitWidth simpleFirebugFullHeight"><textarea id="simpleFireBugInputTextArea" class="simpleFirebugFullWidth simpleFirebugFullHeight"></textarea></td>';
+	return htmlContent + '<td colspan="2" class="simpleFireBug simpleFirebugSplitWidth simpleFirebugFullHeight"><textarea id="simpleFireBugInputTextArea" class="simpleFireBug simpleFirebugFullWidth simpleFirebugFullHeight"></textarea></td>';
 }
 
 function addOutputArea(htmlContent) {
-	return htmlContent + '<td colspan="2" class="simpleFirebugSplitWidth simpleFirebugFullHeight"><div id="simpleFireBugOutputDiv" class="simpleFirebugFullWidth simpleFirebugFullHeight" /></td>';
+	return htmlContent + '<td colspan="2" class="simpleFireBug simpleFirebugSplitWidth simpleFirebugFullHeight"><div id="simpleFireBugOutputDiv" class="simpleFirebugFullWidth simpleFirebugFullHeight" /></td>';
 }
 
 function addButtons(htmlContent) {
 	return htmlContent +
-		'<td><input type="button" value="Run" onclick="simpleFireBugRun();" /></td>' +
-		'<td><input type="button" value="Clear" onclick="clearSimpleFireBugInputArea();" /></td>' +
-		'<td colspan="2"><input type="button" value="Close" onclick="closeSimpleFireBug();" /></td>';
+		'<td class="simpleFireBug hideRightBorder"><input type="button" value="Run" onclick="simpleFireBugRun();" /></td>' +
+		'<td class="simpleFireBug hideLeftBorder"><input type="button" value="Clear" onclick="clearSimpleFireBugInputArea();" /></td>' +
+		'<td class="simpleFireBug" colspan="2"><input type="button" class="simpleFireBugCloseButton" value="Close" onclick="closeSimpleFireBug();" /></td>';
 }
 
 function simpleFireBugRun() {
-	var inputArea = document.getElementById('simpleFireBugInputTextArea');
-	var javascript = inputArea.value;	
+	var javascript = getJavascriptStringFromInputArea();
+	var evaluationResult = evaluateJavascript(javascript);	
 	
+	var innerHTMLForOutputDiv = buildResult(javascript, evaluationResult);
+	document.getElementById('simpleFireBugOutputDiv').innerHTML = innerHTMLForOutputDiv;
+}
+
+function getJavascriptStringFromInputArea() {
+	return document.getElementById('simpleFireBugInputTextArea').value;
+}
+
+function evaluateJavascript(javascriptString) {
 	var result;
 	
 	try{
-		result = eval(javascript);
+		result = eval(javascriptString);
 	} catch(error) {
 		result = error;
 	}
 	
-	document.getElementById('simpleFireBugOutputDiv').innerHTML = result;
+	return result;
+}
+
+function buildResult(inputJavascript, evaluationResult) {
+	return "<span class='inputJS'>" + inputJavascript + "</span>" +
+			"<br /><br />" +
+			"<span class='evaluationResult'>" + evaluationResult + "</span>";
 }
