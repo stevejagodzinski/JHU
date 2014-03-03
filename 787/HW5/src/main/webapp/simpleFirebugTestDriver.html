@@ -3,7 +3,15 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<title>Assignment:JavaScript - MiniFirebug</title>
+	<link rel="stylesheet" href="./css/reset.css" type="text/css" />
 	<link rel="stylesheet" href="./css/sjagodz15_styles.css" type="text/css" />
+	
+	<!-- For a client to use SimpleFireBug, they must put this stylesheet in their page's head. -->
+	<link rel="stylesheet" href="./css/simple_fire_bug.css" type="text/css" />
+	
+	<!-- For a client to use SimpleFireBug, the must put these scripts in their page's head. -->
+	<script src="./scripts/sjagodz15_ajax_utils.js"></script>
+	<script src="./scripts/sjagodz15_simpleFireBug.js"></script>
 </head>
 <body>
 	<div align="center">
@@ -189,6 +197,12 @@
 		sapien. Sed ullamcorper sollicitudin urna sed mollis. Cras a semper
 		sapien, in aliquet felis. Vestibulum ante ipsum primis in faucibus
 		orci luctus et ultrices posuere cubilia Curae;
+	</div>
+	
+	<!-- For a client to use SimpleFireBug, they must put this div in their page's body. -->	
+	<div id="simpleFireBugDiv" class="simpleFireBugContents">
+		<input id="launchSimpleFireBugButton" class="simpleFireBugCloseButton" type="button" value="Close"  onclick="closeSimpleFireBug();"/>
+		<input id="closeSimpleFireBugButton" class="simpleFireBugLaunchButton" type="button" value="Launch Simple Fire Bug" onclick="launchSimpleFireBug();"/>
 	</div>
 </body>
 </html>

@@ -1,0 +1,15 @@
+.simpleFireBugContents {
+	position:fixed;
+   	bottom:0px;
+   	width:100%;
+   	border:2px solid;
+   	background-color:white;
+}
+
+.simpleFireBugLaunchButton {
+	margin-left: 50%;
+}
+
+.simpleFireBugCloseButton {
+	float: right;
+}
