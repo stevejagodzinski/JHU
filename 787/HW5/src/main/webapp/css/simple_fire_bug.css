@@ -1,9 +1,14 @@
 .simpleFireBugContents {
 	position:fixed;
    	bottom:0px;
-   	width:100%;
+   	width:950px;
    	border:2px solid;
    	background-color:white;
+}
+
+.simpleFireBugContentsExpandedHeight {
+	height:25%;
+	min-height: 150px;
 }
 
 .simpleFireBugLaunchButton {
@@ -13,3 +18,16 @@
 .simpleFireBugCloseButton {
 	float: right;
 }
+
+.simpleFirebugFullWidth {
+	width: 100%;
+}
+
+.simpleFirebugFullHeight {
+	height: 100%;
+}
+
+.simpleFirebugSplitWidth {
+	width: 50%;
+}
+
