@@ -58,3 +58,7 @@ function buildResult(inputJavascript, evaluationResult) {
 			"<br /><br />" +
 			"<span class='evaluationResult'>" + evaluationResult + "</span>";
 }
+
+function clearSimpleFireBugInputArea() {
+	document.getElementById('simpleFireBugInputTextArea').value = "";
+}
