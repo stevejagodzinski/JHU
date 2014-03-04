@@ -1,7 +1,29 @@
 
 window.onload=new function(){
 	addBodyToDivIfDocumentReady(0);
+	initLogger();
 };
+
+function initLogger() {
+	// Global Scope Intentional
+	simpleFireBugConsole = new Object();
+	simpleFireBugConsole['log'] = function() {
+		var logOutput = new String();
+		
+		for (var i = 0; i < arguments.length; i++) {
+			logOutput += arguments[i] + '<br />';
+		};
+		
+		var outputDiv = document.getElementById('simpleFireBugLogOutput');
+		outputDiv.innerHTML = outputDiv.innerHTML + logOutput;
+		
+		
+	};
+}
+
+function enableClearLogButton() {
+	document.getElementById('simpleFireBugLogOutput');
+}
 
 function addBodyToDivIfDocumentReady(attempts) {
 	var WAIT_FOR_DOCUMENT_READY_TIMEOUT_MS = 10000;
@@ -39,14 +61,20 @@ function addInputArea(htmlContent) {
 }
 
 function addOutputArea(htmlContent) {
-	return htmlContent + '<td colspan="2" class="simpleFireBug simpleFirebugSplitWidth simpleFirebugFullHeight"><div id="simpleFireBugOutputDiv" class="simpleFirebugFullWidth simpleFirebugFullHeight simpleFireBugOutputDiv" /></td>';
+	return htmlContent + 
+	'<td colspan="2" class="simpleFireBug simpleFirebugSplitWidth simpleFirebugFullHeight">' +
+	'<div id="simpleFireBugOutputDiv" class="simpleFirebugFullWidth simpleFirebugFullHeight simpleFireBugOutputDiv" >' +
+	'<span id="simpleFireBugLogOutput" class="simpleFireBugLogOutput" ></span>' +
+	'<span id="simpleFireBugJSEvaluationOutput" class="simpleFireBugJSEvaluationOutput" ></span>' +
+	'</div>' +
+	'</td>';
 }
 
 function addButtons(htmlContent) {
 	return htmlContent +
 		'<td class="simpleFireBug hideRightBorder"><input type="button" value="Run" onclick="simpleFireBugRun();" /></td>' +
 		'<td class="simpleFireBug hideLeftBorder"><input type="button" value="Clear" onclick="clearSimpleFireBugInputArea();" /></td>' +
-		'<td class="simpleFireBug" colspan="2"><input type="button" class="simpleFireBugCloseButton" value="Close" onclick="closeSimpleFireBug();" /></td>';
+		'<td class="simpleFireBug" colspan="1"><input type="button" class="simpleFireBugCloseButton" value="Close" onclick="closeSimpleFireBug();" /></td>';
 }
 
 function simpleFireBugRun() {
@@ -54,7 +82,7 @@ function simpleFireBugRun() {
 	var evaluationResult = evaluateJavascript(javascript);	
 	
 	var innerHTMLForOutputDiv = buildResult(javascript, evaluationResult);
-	document.getElementById('simpleFireBugOutputDiv').innerHTML = innerHTMLForOutputDiv;
+	document.getElementById('simpleFireBugJSEvaluationOutput').innerHTML = innerHTMLForOutputDiv;
 }
 
 function getJavascriptStringFromInputArea() {

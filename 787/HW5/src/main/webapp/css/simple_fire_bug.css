@@ -65,3 +65,8 @@ td.simpleFireBug {
 	height: 122px;
 	overflow-y:scroll
 }
+
+.simpleFireBugLogOutput {
+	color: gray;
+	border-bottom: 1px solid;
+}
