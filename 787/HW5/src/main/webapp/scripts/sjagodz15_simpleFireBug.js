@@ -19,7 +19,7 @@ function addInputArea(htmlContent) {
 }
 
 function addOutputArea(htmlContent) {
-	return htmlContent + '<td colspan="2" class="simpleFireBug simpleFirebugSplitWidth simpleFirebugFullHeight"><div id="simpleFireBugOutputDiv" class="simpleFirebugFullWidth simpleFirebugFullHeight" /></td>';
+	return htmlContent + '<td colspan="2" class="simpleFireBug simpleFirebugSplitWidth simpleFirebugFullHeight"><div id="simpleFireBugOutputDiv" class="simpleFirebugFullWidth simpleFirebugFullHeight simpleFireBugOutputDiv" /></td>';
 }
 
 function addButtons(htmlContent) {

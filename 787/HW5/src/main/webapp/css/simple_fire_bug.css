@@ -1,14 +1,15 @@
 .simpleFireBugContents {
 	position:fixed;
-   	bottom:0px;
-   	width:950px;
+   	left:0;
+   	right:0;
+   	bottom:0;
+   	width:100%;
    	border:2px solid;
    	background-color:white;
 }
 
 .simpleFireBugContentsExpandedHeight {
-	height:25%;
-	min-height: 150px;
+	height: 150px;
 }
 
 .simpleFireBugLaunchButton {
@@ -50,6 +51,17 @@ textArea.simpleFireBug{
 }
 
 table,th,td.simpleFireBug {
-	border:1px solid black;
+	border:0px solid black;
 	border-collapse:collapse;
+}
+
+td.simpleFireBug {
+	border-bottom:1px solid black;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.simpleFireBugOutputDiv {
+	height: 122px;
+	overflow-y:scroll
 }
