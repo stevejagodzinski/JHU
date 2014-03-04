@@ -1,3 +1,23 @@
+
+window.onload=new function(){
+	addBodyToDivIfDocumentReady(0);
+};
+
+function addBodyToDivIfDocumentReady(attempts) {
+	var WAIT_FOR_DOCUMENT_READY_TIMEOUT_MS = 10000;
+	var WAIT_FOR_DOCUMENT_READY_RETRY_INTERVAL_MS = 100;
+	
+	if(window.document.readyState === "complete") {
+		addDivToBody();
+	} else {
+		var attemptAgain = (attempts * WAIT_FOR_DOCUMENT_READY_RETRY_INTERVAL_MS) < WAIT_FOR_DOCUMENT_READY_TIMEOUT_MS;
+		
+		if(attemptAgain) {
+			window.setTimeout(function(){addBodyToDivIfDocumentReady(attempts + 1);}, WAIT_FOR_DOCUMENT_READY_RETRY_INTERVAL_MS);
+		};
+	};
+}
+
 function closeSimpleFireBug() {
 	document.getElementById('simpleFireBugDiv').style.visibility = 'hidden';
 }
@@ -61,4 +81,13 @@ function buildResult(inputJavascript, evaluationResult) {
 
 function clearSimpleFireBugInputArea() {
 	document.getElementById('simpleFireBugInputTextArea').value = "";
+}
+
+function addDivToBody() {
+	var div = 	'<div id="simpleFireBugDiv" class="simpleFireBugContents">' +
+					'<input id="launchSimpleFireBugButton" class="simpleFireBugCloseButton" type="button" value="Close"  onclick="closeSimpleFireBug();"/>' +
+					'<input id="closeSimpleFireBugButton" class="simpleFireBugLaunchButton" type="button" value="Launch Simple Fire Bug" onclick="launchSimpleFireBug();"/>' +
+				'</div>';
+	
+	document.body.innerHTML += div;
 }
