@@ -50,7 +50,7 @@ public class CustomerLookupByIdsController extends HttpServlet
     }
     
     private List<String> getCustomerIds(HttpServletRequest request) {
-    	List<String> customerIds = Arrays.asList(StringUtils.split(request.getParameter("customerIds")));
+    	List<String> customerIds = Arrays.asList(StringUtils.split(request.getParameter("customerIds"), ','));
     	List<String> trimmedCustomerIds = new ArrayList<>(customerIds.size());
     	for(String customerId : customerIds) {
     		trimmedCustomerIds.add(customerId.trim());

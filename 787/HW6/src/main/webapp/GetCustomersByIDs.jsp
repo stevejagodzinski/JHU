@@ -16,7 +16,7 @@
         <legend>Get Customer By Id</legend>
         <form>
             <label>Customer ID:<input id="customerIds" type="text"/></label><br/>
-            <input type="button" value="Find Customer by IDs" onclick="findCustomersByIDs(<%= request.getAttribute("outputFormat") %>)"/>
+            <input type="button" value="Find Customer by IDs" onclick="findCustomersByIDs('<%= request.getParameter("outputFormat") %>');"/>
             <div id="findCustomersByIdsResult"></div>
         </form>
     </fieldset>
