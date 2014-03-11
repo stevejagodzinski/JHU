@@ -10,7 +10,7 @@ function getAjaxResultHandler(outputFormat) {
 		return jsonAjaxResultHandler;
 	} else if(outputFormat == 'STRING') {
 		return stringAjaxResultHandler;
-	}  else if(outformat == 'XML') {
+	}  else if(outputFormat == 'XML') {
 		return xmlAjaxResultHandler;
 	}
 }
@@ -48,8 +48,11 @@ function parseCustomerString(customerString) {
 }
 
 
-function xmlAjaxResultHandler() {
-	
+function xmlAjaxResultHandler(request, resultRegion) {
+	if ((request.readyState == 4) &&
+		      (request.status == 200)) {
+		htmlInsert(resultRegion, request.responseText);
+	}
 }
 
 function buildTable(customers) {

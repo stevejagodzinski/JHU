@@ -2,6 +2,10 @@ package com.jagodzinski.simplebanking.model;
 
 import java.math.BigDecimal;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class CustomerAccountSummary
 {
     private CustomerAccountSummary(){};
@@ -16,6 +20,7 @@ public class CustomerAccountSummary
     private String firstName;
     private String lastName;
 
+	@XmlElement
     public BigDecimal getAccountBalance()
     {
         return accountBalance;
@@ -26,6 +31,7 @@ public class CustomerAccountSummary
         this.accountBalance = accountBalance;
     }
 
+	@XmlElement
     public String getCustomerId()
     {
         return customerId;
@@ -36,6 +42,7 @@ public class CustomerAccountSummary
         this.customerId = customerId;
     }
 
+	@XmlElement
     public String getFirstName()
     {
         return firstName;
@@ -46,6 +53,7 @@ public class CustomerAccountSummary
         this.firstName = firstName;
     }
 
+	@XmlElement
     public String getLastName()
     {
         return lastName;
