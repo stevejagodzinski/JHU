@@ -3,11 +3,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head><title>Get Customer By Id</title>
     <link rel="stylesheet"
-          href="./css/sjagodz13_styles.css"
+          href="./css/sjagodz16_styles.css"
           type="text/css"/>
-    <script src="./scripts/sjagodz14_ajax_utils.js"
+    <script src="./scripts/sjagodz16_ajax_utils.js"
             type="text/javascript"></script>
-    <script src="./scripts/sjagodz14.js"
+    <script src="./scripts/sjagodz16.js"
             type="text/javascript"></script>
 </head>
 <body>
@@ -15,9 +15,9 @@
     <fieldset>
         <legend>Get Customer By Id</legend>
         <form>
-            <label>Customer ID:<input id="customerID" type="text"/></label><br/>
-            <input type="button" value="Find Customer by ID" onclick="findCustomerByIDFromTextInput()"/>
-            <div id="findCustomerByIDResult"></div>
+            <label>Customer ID:<input id="customerIds" type="text"/></label><br/>
+            <input type="button" value="Find Customer by IDs" onclick="findCustomersByIDs(<%= request.getAttribute("outputFormat") %>)"/>
+            <div id="findCustomersByIdsResult"></div>
         </form>
     </fieldset>
 </div>

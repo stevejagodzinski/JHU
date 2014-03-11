@@ -56,6 +56,16 @@ public class CustomerLookupService
         customers.put(customerAccountSummary.getCustomerId(), customerAccountSummary);
     }
 
+    public Collection<CustomerAccountSummary> getAllCustomers(final Collection<String> customerIds) {
+    	List<CustomerAccountSummary> customerAccountSummaries = new ArrayList<>(customerIds.size());
+    	
+    	for(String customerId : customerIds) {
+    		customerAccountSummaries.add(getCustomerById(customerId));
+    	}
+    	
+    	return customerAccountSummaries;
+    }
+    
     public CustomerAccountSummary getCustomerById(final String customerId)
     {
         return customers.get(customerId);
