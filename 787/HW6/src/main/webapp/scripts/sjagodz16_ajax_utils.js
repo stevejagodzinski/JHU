@@ -39,10 +39,10 @@ function showResponseAlert(request) {
 // Make an HTTP request to the given address. 
 // Display result in the HTML element that has given ID.
 
-function ajaxResult(address, resultRegion) {
+function ajaxResult(address, resultRegion, responseHandler) {
   var request = getRequestObject();
   request.onreadystatechange =
-    function() { showResponseText(request,
+    function() { responseHandler(request,
                                   resultRegion); };
   request.open("GET", address, true);
   request.send(null);
@@ -68,4 +68,36 @@ function htmlInsert(id, htmlData) {
 
 function getValue(id) {
   return(escape(document.getElementById(id).value));
+}
+
+//Takes as input an array of headings (to go into th elements)
+//and an array-of-arrays of rows (to go into td
+//elements). Builds an xhtml table from the data.
+
+function getTable(headings, rows) {
+	var table = "<table border='1' class='ajaxTable'>\n"
+			+ getTableHeadings(headings) + getTableBody(rows) + "</table>";
+	return (table);
+}
+
+function getTableHeadings(headings) {
+	var firstRow = "  <tr>";
+	for (var i = 0; i < headings.length; i++) {
+		firstRow += "<th>" + headings[i] + "</th>";
+	}
+	firstRow += "</tr>\n";
+	return (firstRow);
+}
+
+function getTableBody(rows) {
+	var body = "";
+	for (var i = 0; i < rows.length; i++) {
+		body += "  <tr>";
+		var row = rows[i];
+		for (var j = 0; j < row.length; j++) {
+			body += "<td>" + row[j] + "</td>";
+		}
+		body += "</tr>\n";
+	}
+	return (body);
 }
