@@ -70,34 +70,25 @@ function getValue(id) {
   return(escape(document.getElementById(id).value));
 }
 
-//Takes as input an array of headings (to go into th elements)
-//and an array-of-arrays of rows (to go into td
-//elements). Builds an xhtml table from the data.
+//Given a doc and the name of an XML element, returns an 
+//array of the values of all elements with that name.
+//E.g., for 
+//<foo><a>one</a><q>two</q><a>three</a></foo>
+//getXmlValues(doc, "a") would return 
+//["one", "three"].
 
-function getTable(headings, rows) {
-	var table = "<table border='1' class='ajaxTable'>\n"
-			+ getTableHeadings(headings) + getTableBody(rows) + "</table>";
-	return (table);
+function getXmlValues(xmlDocument, xmlElementName) {
+var elementArray = 
+  xmlDocument.getElementsByTagName(xmlElementName);
+var valueArray = new Array();
+for(var i=0; i<elementArray.length; i++) {
+  valueArray[i] = getBodyContent(elementArray[i]);
+}
+return(valueArray);
 }
 
-function getTableHeadings(headings) {
-	var firstRow = "  <tr>";
-	for (var i = 0; i < headings.length; i++) {
-		firstRow += "<th>" + headings[i] + "</th>";
-	}
-	firstRow += "</tr>\n";
-	return (firstRow);
-}
-
-function getTableBody(rows) {
-	var body = "";
-	for (var i = 0; i < rows.length; i++) {
-		body += "  <tr>";
-		var row = rows[i];
-		for (var j = 0; j < row.length; j++) {
-			body += "<td>" + row[j] + "</td>";
-		}
-		body += "</tr>\n";
-	}
-	return (body);
+//Given an element, returns the body content.
+function getBodyContent(element) {
+  element.normalize();
+  return(element.childNodes[0].nodeValue);
 }

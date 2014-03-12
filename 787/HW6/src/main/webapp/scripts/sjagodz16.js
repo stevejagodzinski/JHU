@@ -51,8 +51,41 @@ function parseCustomerString(customerString) {
 function xmlAjaxResultHandler(request, resultRegion) {
 	if ((request.readyState == 4) &&
 		      (request.status == 200)) {
-		htmlInsert(resultRegion, request.responseText);
+		var customersArray = buildCustomerArrayFromXML(request.responseXML);
+		var table = buildTable(customersArray);
+		htmlInsert(resultRegion, table);
 	}
+}
+
+function buildCustomerArrayFromXML(xmlDocument) {
+	var customerArray = new Array();
+	
+	var customerIds = getXmlValues(xmlDocument, 'customerId');
+	
+	for(var i = 0; i < customerIds.length; i++) {
+		customerArray.push(new Object());
+		customerArray[i].customerId = customerIds[i];
+	}
+	
+	var firstNames = getXmlValues(xmlDocument, 'firstName');
+	
+	for(var i = 0; i < firstNames.length; i++) {
+		customerArray[i].firstName = firstNames[i];
+	}
+	
+	var lastNames = getXmlValues(xmlDocument, 'lastName');
+	
+	for(var i = 0; i < lastNames.length; i++) {
+		customerArray[i].lastName = lastNames[i];
+	}
+	
+	var accountBalances = getXmlValues(xmlDocument, 'accountBalance');
+	
+	for(var i = 0; i < accountBalances.length; i++) {
+		customerArray[i].accountBalance = accountBalances[i];
+	}
+	
+	return customerArray;
 }
 
 function buildTable(customers) {
