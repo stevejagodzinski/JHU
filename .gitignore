@@ -11,3 +11,6 @@
 *.classpath
 
 *.name
+
+# Maven Targets #
+**/target/**
