@@ -67,7 +67,7 @@ function htmlInsert(id, htmlData) {
 // The builtin "escape" function converts < to &lt;, etc.
 
 function getValue(id) {
-  return(escape(document.getElementById(id).value));
+	return (escape(document.getElementById(id).value));
 }
 
 //Given a doc and the name of an XML element, returns an 
@@ -78,17 +78,16 @@ function getValue(id) {
 //["one", "three"].
 
 function getXmlValues(xmlDocument, xmlElementName) {
-var elementArray = 
-  xmlDocument.getElementsByTagName(xmlElementName);
-var valueArray = new Array();
-for(var i=0; i<elementArray.length; i++) {
-  valueArray[i] = getBodyContent(elementArray[i]);
-}
-return(valueArray);
+	var elementArray = xmlDocument.getElementsByTagName(xmlElementName);
+	var valueArray = new Array();
+	for (var i = 0; i < elementArray.length; i++) {
+		valueArray[i] = getBodyContent(elementArray[i]);
+	}
+	return (valueArray);
 }
 
 //Given an element, returns the body content.
 function getBodyContent(element) {
-  element.normalize();
-  return(element.childNodes[0].nodeValue);
+	element.normalize();
+	return (element.childNodes[0].nodeValue);
 }

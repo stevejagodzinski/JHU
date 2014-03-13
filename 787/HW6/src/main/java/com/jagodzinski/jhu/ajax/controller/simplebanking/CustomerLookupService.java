@@ -1,6 +1,6 @@
-package com.jagodzinski.simplebanking.controller;
+package com.jagodzinski.jhu.ajax.controller.simplebanking;
 
-import com.jagodzinski.simplebanking.model.CustomerAccountSummary;
+import com.jagodzinski.jhu.ajax.model.simplebanking.CustomerAccountSummary;
 
 import java.math.BigDecimal;
 import java.util.*;

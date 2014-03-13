@@ -1,4 +1,4 @@
-package com.jagodzinski.simplebanking.controller;
+package com.jagodzinski.jhu.ajax.controller.simplebanking;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,9 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.jagodzinski.simplebanking.controller.dataformat.ResponseStrategy;
-import com.jagodzinski.simplebanking.controller.dataformat.ResponseStrategyFactory;
-import com.jagodzinski.simplebanking.model.CustomerAccountSummary;
+import com.jagodzinski.jhu.ajax.controller.dataformat.ResponseStrategy;
+import com.jagodzinski.jhu.ajax.controller.dataformat.ResponseStrategyFactory;
+import com.jagodzinski.jhu.ajax.model.simplebanking.CustomerAccountSummary;
 
 @WebServlet("/CustomerLookup")
 public class CustomerLookupByIdsController extends HttpServlet
@@ -52,9 +52,11 @@ public class CustomerLookupByIdsController extends HttpServlet
     private List<String> getCustomerIds(HttpServletRequest request) {
     	List<String> customerIds = Arrays.asList(StringUtils.split(request.getParameter("customerIds"), ','));
     	List<String> trimmedCustomerIds = new ArrayList<>(customerIds.size());
+
     	for(String customerId : customerIds) {
     		trimmedCustomerIds.add(customerId.trim());
     	}
+
     	return trimmedCustomerIds;
     }
 }

@@ -1,4 +1,4 @@
-package com.jagodzinski.simplebanking.model;
+package com.jagodzinski.jhu.ajax.model.simplebanking;
 
 import java.math.BigDecimal;
 

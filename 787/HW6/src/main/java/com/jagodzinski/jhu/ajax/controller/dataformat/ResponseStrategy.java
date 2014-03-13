@@ -1,4 +1,4 @@
-package com.jagodzinski.simplebanking.controller.dataformat;
+package com.jagodzinski.jhu.ajax.controller.dataformat;
 
 import java.util.Collection;
 

@@ -1,4 +1,4 @@
-package com.jagodzinski.simplebanking.controller.dataformat;
+package com.jagodzinski.jhu.ajax.controller.dataformat;
 
 public class ResponseStrategyFactory {
 	public static ResponseStrategy getResponseStrategy(String responseFormat) {
@@ -7,18 +7,17 @@ public class ResponseStrategyFactory {
 	
 	public static ResponseStrategy getResponseStrategy(ResponseFormat responseFormat) {
 
-		// TODO: singletons?
 		ResponseStrategy strategy;
 
 		switch (responseFormat) {
 			case JSON:
-				strategy = new JSONResponseFormatStrategy();
+				strategy = JSONResponseFormatStrategy.getInstance();
 				break;
 			case XML:
-				strategy = new XMLResponseFormatStrategy();
+				strategy = XMLResponseFormatStrategy.getInstance();
 				break;
 			case STRING:
-				strategy = new StringResponseFormatStrategy();
+				strategy = StringResponseFormatStrategy.getInstance();
 				break;
 			default:
 				throw new IllegalArgumentException(String.format("Unsupported response format %s", responseFormat));

@@ -59,32 +59,32 @@ function xmlAjaxResultHandler(request, resultRegion) {
 
 function buildCustomerArrayFromXML(xmlDocument) {
 	var customerArray = new Array();
-	
+
 	var customerIds = getXmlValues(xmlDocument, 'customerId');
-	
+
 	for(var i = 0; i < customerIds.length; i++) {
 		customerArray.push(new Object());
 		customerArray[i].customerId = customerIds[i];
 	}
-	
+
 	var firstNames = getXmlValues(xmlDocument, 'firstName');
-	
+
 	for(var i = 0; i < firstNames.length; i++) {
 		customerArray[i].firstName = firstNames[i];
 	}
-	
+
 	var lastNames = getXmlValues(xmlDocument, 'lastName');
-	
+
 	for(var i = 0; i < lastNames.length; i++) {
 		customerArray[i].lastName = lastNames[i];
 	}
-	
+
 	var accountBalances = getXmlValues(xmlDocument, 'accountBalance');
-	
+
 	for(var i = 0; i < accountBalances.length; i++) {
 		customerArray[i].accountBalance = accountBalances[i];
 	}
-	
+
 	return customerArray;
 }
 
@@ -100,4 +100,43 @@ function buildTable(customers) {
 	};
 	
 	return table;
+}
+
+function executeLuckyNumbers(resultArea) {
+	var numberOfRandoms = 4;
+	getRandomNumbersFromServer(numberOfRandoms, 'luckyNumbersResult');
+}
+
+function getRandomNumbersFromServer(numberOfRandoms, resultArea) {
+	var baseAddress = "LuckyNumbers";
+    var data = "numberOfRandoms=" + numberOfRandoms;
+    var address = baseAddress + "?" + data;
+    ajaxResult(address, resultArea, handleRandomNumbersFromServerResult);
+}
+
+function handleRandomNumbersFromServerResult(request, resultRegion) {
+	if ((request.readyState == 4) && (request.status == 200)) {
+		var serverNumbers = eval(request.responseText);
+		var browserRandoms = generateRandomNumbersInBrowser();
+		var sum = sumRandoms(serverNumbers, browserRandoms);
+		displayResult(sum, resultRegion);
+	}
+}
+
+function generateRandomNumbersInBrowser() {
+	return [Math.random(), Math.random(), Math.random(), Math.random()];
+}
+
+function sumRandoms(serverNumbers, browserRandoms) {
+	return serverNumbers.concat(browserRandoms).reduce(function(a, b) {
+	    return a + b;
+	});
+}
+
+function displayResult(sum, resultRegion) {
+	if(sum < 4) {
+		htmlInsert(resultRegion, "you are a loser");
+	} else {
+		htmlInsert(resultRegion, "you are a winner");
+	}
 }
