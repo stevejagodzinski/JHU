@@ -1,23 +1,21 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head><title>Java-Based JSP Custom Tag Driver</title>
+<head><title>Get Customer By Id</title>
     <link rel="stylesheet"
           href="./css/sjagodz17_styles.css"
           type="text/css"/>
     <script src="./scripts/sjagodz17_ajax_utils.js"
             type="text/javascript"></script>
-    <script src="./scripts/sjagodz17_simple_banking.js"
-            type="text/javascript"></script>
 </head>
 <body>
+<%@ taglib uri="/WEB-INF/tlds/sjagodz17-taglib.tld" prefix="sjagodz17" %>
 <div align="center">
     <fieldset>
-        <legend>Get Customer By Id</legend>
+        <legend>Java-Based JSP Custom Tag Driver</legend>
         <form>
-            <label>Customer ID:<input id="customerIds" type="text"/></label><br/>
-            <input type="button" value="Find Customer by IDs" onclick="findCustomersByIDs('<%= request.getParameter("outputFormat") %>');"/>
-            <div id="findCustomersByIdsResult"></div>
+            <sjagodz17:ajaxButton url="AjaxButtonTestURL" resultRegion="ajaxButtonResultRegion" value="AJAX Button"/>
+            <div id="ajaxButtonResultRegion"></div>
         </form>
     </fieldset>
 </div>
