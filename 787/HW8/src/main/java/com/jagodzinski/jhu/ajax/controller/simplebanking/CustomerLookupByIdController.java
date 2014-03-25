@@ -14,7 +14,7 @@ import com.jagodzinski.jhu.ajax.controller.dataformat.JSONResponseFormatStrategy
 import com.jagodzinski.jhu.ajax.controller.dataformat.ResponseStrategy;
 import com.jagodzinski.jhu.ajax.model.simplebanking.CustomerAccountSummary;
 
-@WebServlet("/GetCustomersByID")
+@WebServlet("/GetCustomerByID")
 public class CustomerLookupByIdController extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;

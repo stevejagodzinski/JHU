@@ -2,13 +2,29 @@ function findCustomersByIDs() {
     var baseAddress = "GetCustomersByIDs";
     var data = "customerIds=" + getValue('customerIds');
     var address = baseAddress + "?" + data;
-    ajaxResult(address, 'findCustomersByIdsResult', jsonAjaxResultHandler);
+    ajaxResult(address, 'findCustomersByIdsResult', buildTableFromJSONArray);
 }
 
-function jsonAjaxResultHandler(request, resultRegion) {
+function findCustomerByID() {
+    var baseAddress = "GetCustomerByID";
+    var data = "customerId=" + getValue('customerId');
+    var address = baseAddress + "?" + data;
+    ajaxResult(address, 'findCustomerByIdResult', buildTableFromJSONObject);
+}
+
+function buildTableFromJSONObject(request, resultRegion) {
 	if ((request.readyState == 4) &&
 		      (request.status == 200)) {
-		var json = eval(request.responseText);
+		var json = fromJSONObject(request.responseText);
+		var table = buildTable(new Array(json));
+		htmlInsert(resultRegion, table);
+	}
+}
+
+function buildTableFromJSONArray(request, resultRegion) {
+	if ((request.readyState == 4) &&
+		      (request.status == 200)) {
+		var json = fromJSONArray(request.responseText);
 		var table = buildTable(json);
 		htmlInsert(resultRegion, table);
 	}

@@ -91,3 +91,11 @@ function getBodyContent(element) {
 	element.normalize();
 	return (element.childNodes[0].nodeValue);
 }
+
+function fromJSONArray(json) {
+	return eval(json);
+}
+
+function fromJSONObject(json) {
+	return eval('(' + json + ')');
+}
