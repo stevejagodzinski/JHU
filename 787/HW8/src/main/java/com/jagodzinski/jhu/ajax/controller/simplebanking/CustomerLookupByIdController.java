@@ -1,10 +1,6 @@
 package com.jagodzinski.jhu.ajax.controller.simplebanking;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,20 +14,20 @@ import com.jagodzinski.jhu.ajax.controller.dataformat.JSONResponseFormatStrategy
 import com.jagodzinski.jhu.ajax.controller.dataformat.ResponseStrategy;
 import com.jagodzinski.jhu.ajax.model.simplebanking.CustomerAccountSummary;
 
-@WebServlet("/GetCustomersByIDs")
-public class CustomerLookupByIdsController extends HttpServlet
+@WebServlet("/GetCustomersByID")
+public class CustomerLookupByIdController extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
 
 	@Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
-		Collection<CustomerAccountSummary> customerAccountSummaries = getCustomerAccountSummaries(request);
+		CustomerAccountSummary customerAccountSummary = getCustomerAccountSummary(request);
 
         setNoCacheResponseHeaders(response);
 
 		ResponseStrategy responseStrategy = JSONResponseFormatStrategy.getInstance();
-		String ajaxResponseBody = responseStrategy.toResponse(customerAccountSummaries);
+		String ajaxResponseBody = responseStrategy.toResponse(customerAccountSummary);
 		response.getWriter().write(ajaxResponseBody);
     }
 
@@ -41,21 +37,14 @@ public class CustomerLookupByIdsController extends HttpServlet
         response.setHeader("Pragma", "no-cache");
     }
     
-    private Collection<CustomerAccountSummary> getCustomerAccountSummaries(HttpServletRequest request) {
-        List<String> customerIds = getCustomerIds(request);    	
+	private CustomerAccountSummary getCustomerAccountSummary(HttpServletRequest request) {
+		String customerId = getCustomerId(request);
 
         CustomerLookupService customerLookupService = CustomerLookupService.getInstance();
-        return customerLookupService.getAllCustomers(customerIds);
+		return customerLookupService.getCustomerById(customerId);
     }
     
-    private List<String> getCustomerIds(HttpServletRequest request) {
-    	List<String> customerIds = Arrays.asList(StringUtils.split(request.getParameter("customerIds"), ','));
-    	List<String> trimmedCustomerIds = new ArrayList<>(customerIds.size());
-
-    	for(String customerId : customerIds) {
-    		trimmedCustomerIds.add(customerId.trim());
-    	}
-
-    	return trimmedCustomerIds;
+	private String getCustomerId(HttpServletRequest request) {
+		return StringUtils.trimToNull(request.getParameter("customerId"));
     }
 }

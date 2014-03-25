@@ -2,7 +2,8 @@ package com.jagodzinski.jhu.ajax.controller.dataformat;
 
 import java.util.Collection;
 
-import com.google.gson.Gson;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class JSONResponseFormatStrategy implements ResponseStrategy {
 
@@ -17,6 +18,10 @@ public class JSONResponseFormatStrategy implements ResponseStrategy {
 
 	@Override
 	public String toResponse(Collection<? extends Object> responseObjects) {
-		return new Gson().toJson(responseObjects);
+		return new JSONArray(responseObjects).toString();
+	}
+
+	public String toResponse(Object responseObject) {
+		return new JSONObject(responseObject).toString();
 	}
 }

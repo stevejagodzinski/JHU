@@ -4,4 +4,6 @@ import java.util.Collection;
 
 public interface ResponseStrategy {
 	String toResponse(Collection<? extends Object> response);
+
+	String toResponse(Object responseObject);
 }
