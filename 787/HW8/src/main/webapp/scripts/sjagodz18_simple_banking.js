@@ -9,14 +9,14 @@ function findCustomerByID() {
     var baseAddress = "GetCustomerByID";
     var data = "customerId=" + getValue('customerId');
     var address = baseAddress + "?" + data;
-    ajaxResult(address, 'findCustomerByIdResult', buildTableFromJSONObject);
+    ajaxResult(address, 'findCustomerByIdResult', buildListFromJSONObject);
 }
 
-function buildTableFromJSONObject(request, resultRegion) {
+function buildListFromJSONObject(request, resultRegion) {
 	if ((request.readyState == 4) &&
 		      (request.status == 200)) {
-		var json = fromJSONObject(request.responseText);
-		var table = buildTable(new Array(json));
+		var customer = fromJSONObject(request.responseText);
+		var table = buildList(customer);
 		htmlInsert(resultRegion, table);
 	}
 }
@@ -24,8 +24,8 @@ function buildTableFromJSONObject(request, resultRegion) {
 function buildTableFromJSONArray(request, resultRegion) {
 	if ((request.readyState == 4) &&
 		      (request.status == 200)) {
-		var json = fromJSONArray(request.responseText);
-		var table = buildTable(json);
+		var customers = fromJSONArray(request.responseText);
+		var table = buildTable(customers);
 		htmlInsert(resultRegion, table);
 	}
 }
@@ -42,4 +42,13 @@ function buildTable(customers) {
 	};
 	
 	return table;
+}
+
+function buildList(customer) {
+	return '<ul>' + 
+			'<li>' + customer['customerId'] + '</li>' +
+			'<li>' + customer['firstName'] + '</li>' +
+			'<li>' + customer['lastName'] + '</li>' +
+			'<li>' + customer['accountBalance'] + '</li>' +
+			'</ul>';
 }
