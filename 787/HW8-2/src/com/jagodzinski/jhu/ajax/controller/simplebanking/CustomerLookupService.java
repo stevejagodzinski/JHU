@@ -2,6 +2,7 @@ package com.jagodzinski.jhu.ajax.controller.simplebanking;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -60,7 +61,11 @@ public class CustomerLookupService
         customers.put(customerAccountSummary.getCustomerId(), customerAccountSummary);
     }
 
-    public Collection<CustomerAccountSummary> getAllCustomers(final Collection<String> customerIds) {
+	public CustomerAccountSummary[] getAllCustomers(final String[] customerIds) {
+		return getAllCustomers(Arrays.asList(customerIds)).toArray(new CustomerAccountSummary[0]);
+	}
+
+	private Collection<CustomerAccountSummary> getAllCustomers(final Collection<String> customerIds) {
     	List<CustomerAccountSummary> customerAccountSummaries = new ArrayList<>(customerIds.size());
     	
     	for(String customerId : customerIds) {

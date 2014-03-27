@@ -6,8 +6,16 @@ window.onload = function() {
 
 function findCustomerByID() {
 	var customerId = getValue('customerId');
-	var customer = rpcClient.customerLookupService.getCustomerById(customerId);
-	htmlInsert('findCustomerByIdResult', buildList(customer));
+	
+	var callback = function(customer, exception) {
+	    if(exception) {
+	      alert(exception.message);
+	    } else {
+	    	htmlInsert('findCustomerByIdResult', buildList(customer));
+	    }
+	};
+	
+	rpcClient.customerLookupService.getCustomerById(callback, customerId);	
 }
 
 function buildList(customer) {
@@ -20,19 +28,17 @@ function buildList(customer) {
 }
 
 function findCustomersByIDs() {
-    var baseAddress = "GetCustomersByIDs";
-    var data = "customerIds=" + getValue('customerIds');
-    var address = baseAddress + "?" + data;
-    ajaxResult(address, 'findCustomersByIdsResult', buildTableFromJSONArray);
-}
-
-function buildTableFromJSONArray(request, resultRegion) {
-	if ((request.readyState == 4) &&
-		      (request.status == 200)) {
-		var customers = fromJSONArray(request.responseText);
-		var table = buildTable(customers);
-		htmlInsert(resultRegion, table);
-	}
+	var customerIds = getRawValue('customerIds').split(',').map(function(s) {return String.prototype.trim.apply(s); });
+	
+	var callback = function(customers, exception) {
+	    if(exception) {
+	      alert(exception.message);
+	    } else {
+	    	htmlInsert('findCustomersByIdsResult', buildTable(customers));
+	    }
+	};
+	
+	rpcClient.customerLookupService.getAllCustomers(callback, customerIds);
 }
 
 function buildTable(customers) {

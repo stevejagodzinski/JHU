@@ -67,7 +67,11 @@ function htmlInsert(id, htmlData) {
 // The builtin "escape" function converts < to &lt;, etc.
 
 function getValue(id) {
-	return (escape(document.getElementById(id).value));
+	return escape(getRawValue(id));
+}
+
+function getRawValue(id) {
+	return document.getElementById(id).value;
 }
 
 //Given a doc and the name of an XML element, returns an 
