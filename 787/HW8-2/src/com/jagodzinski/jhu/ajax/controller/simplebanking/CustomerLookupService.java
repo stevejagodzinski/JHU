@@ -8,6 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.jagodzinski.jhu.ajax.model.simplebanking.CustomerAccountSummary;
 
 public class CustomerLookupService
@@ -79,4 +82,33 @@ public class CustomerLookupService
     {
         return customers.get(customerId);
     }
+
+	public boolean addCustomer(JSONObject jsonCustomer) {
+		boolean success;
+
+		try {
+			String customerId = jsonCustomer.getString("customerId");
+
+			if (customers.containsKey(customerId)) {
+				success = false;
+			} else {
+				CustomerAccountSummary newCustomer = createCustomerAccountSummary(jsonCustomer);
+				customers.put(customerId, newCustomer);
+				success = true;
+			}
+		} catch (JSONException e) {
+			success = false;
+		}
+
+		return success;
+	}
+
+	private CustomerAccountSummary createCustomerAccountSummary(JSONObject jsonCustomer) throws JSONException {
+		CustomerAccountSummary newCustomer = CustomerAccountSummary.newInstance();
+		newCustomer.setAccountBalance(new BigDecimal(jsonCustomer.getString("accountBalance")));
+		newCustomer.setCustomerId(jsonCustomer.getString("customerId"));
+		newCustomer.setFirstName(jsonCustomer.getString("firstName"));
+		newCustomer.setLastName(jsonCustomer.getString("lastName"));
+		return newCustomer;
+	}
 }

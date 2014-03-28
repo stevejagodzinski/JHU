@@ -54,3 +54,28 @@ function buildTable(customers) {
 	
 	return table;
 }
+
+function addCustomer() {
+	var customer = createCustomer();
+	
+	var callback = function(result, exception) {
+	    if(exception) {
+	    	alert(exception.message);
+	    } else if (result){
+	    	htmlInsert('putCustomerResult', "Customer successfully created");
+	    } else { 
+	    	htmlInsert('putCustomerResult', "Customer Already Exists");
+	    }
+	};
+	
+	rpcClient.customerLookupService.addCustomer(callback, customer);
+}
+
+function createCustomer() {
+	var customer = new Object();
+	customer.customerId = getRawValue('customerId');
+	customer.firstName = getRawValue('firstName');
+	customer.lastName = getRawValue('lastName');
+	customer.accountBalance = getRawValue('balance');
+	return customer;
+}
