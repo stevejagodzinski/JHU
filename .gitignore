@@ -1,3 +1,4 @@
+# Java class files
 *.class
 
 # Package Files #
@@ -14,3 +15,16 @@
 
 # Maven Targets #
 **/target/**
+
+# Android #
+
+# Built application files
+*.apk
+*.ap_
+
+# Files for the Dalvik VM
+*.dex
+
+# Generated files
+486/**/bin/
+486/**/gen/
