@@ -10,8 +10,18 @@
 *.setting
 *.project
 *.classpath
-
 *.name
+
+# Eclipse .settings\
+.jsdtscope
+org.eclipse.jdt.core.prefs
+org.eclipse.wst.common.component
+org.eclipse.wst.common.project.facet.core.xml
+org.eclipse.wst.jsdt.ui.superType.container
+org.eclipse.wst.validation.prefs
+
+# Eclipse Build
+**/build/**
 
 # Maven Targets #
 **/target/**
@@ -28,3 +38,8 @@
 # Generated files
 486/**/bin/
 486/**/gen/
+
+## files in .setting folders have to be ignored explicitly
+org.eclipse.jdt.core.prefs
+org.eclipse.wst.common.component
+org.eclipse.wst.common.project.facet.core.xml
