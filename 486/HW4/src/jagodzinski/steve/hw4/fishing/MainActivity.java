@@ -1,4 +1,6 @@
-package com.example.jagodzinski.steve.hw4.fishing;
+package jagodzinski.steve.hw4.fishing;
+
+import jagodzinski.steve.hw4.fishing.R;
 
 import android.os.Bundle;
 import android.app.Activity;
