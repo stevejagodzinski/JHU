@@ -3,11 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:id="@+id/main"
     tools:context=".MainActivity" >
 
     <jagodzinski.steve.hw4.fishing.FishingView
 	        android:id="@+id/fishingView"
-	        android:background="@android:color/transparent"
+	        android:background="@android:color/white"
 	        android:layout_width="match_parent"
 	        android:layout_height="match_parent"/>
 
