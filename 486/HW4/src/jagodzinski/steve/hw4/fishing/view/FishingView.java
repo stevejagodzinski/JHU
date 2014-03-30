@@ -42,6 +42,10 @@ public class FishingView extends RelativeLayout {
 		super(context, attrs, defStyleAttr);
 	}
 	
+	private boolean isInitialized() {
+		return paint != null;
+	}
+
 	private void init() {
 		paint = new Paint();
 		paint.setTextSize(14f);
@@ -65,8 +69,23 @@ public class FishingView extends RelativeLayout {
 	
 	private void initFishBitmap() {
 		fishImage = (ImageView) findViewById(R.id.fish_image_view);
+		makeFishBlackAndWhite();
+	}
+
+	private void makeFishBlackAndWhite() {
+		Log.d(LOGGING_TAG, "Making fish black and white");
+		fishImage.setBackgroundResource(R.drawable.fish_grayscale);
+	}
+
+	private void makeFishColor() {
+		Log.d(LOGGING_TAG, "Making fish colored");
 		fishImage.setBackgroundResource(R.drawable.fish);
 		fishAnimation = (AnimationDrawable) fishImage.getBackground();
+	}
+
+	private void animateFish() {
+		Log.d(LOGGING_TAG, "Animating fish");
+		fishAnimation.start();
 	}
 
 	private void initFishingPoleCoordinates() {
@@ -101,7 +120,9 @@ public class FishingView extends RelativeLayout {
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
 		super.onLayout(changed, l, t, r, b);
 
-		init();
+		if (!isInitialized()) {
+			init();
+		}
 	}
 
 	private void updateFishCoordinates(float newCenterPointX, float newCenterPointY) {
@@ -136,6 +157,14 @@ public class FishingView extends RelativeLayout {
 	private void handleDownActionEvent(final MotionEvent event) {
 		Log.d(LOGGING_TAG, "Handling ACTION_DOWN");
 		detectIsFishSelected(event);
+
+		if (isFishSelected) {
+			handleFishClicked(event);
+		}
+	}
+
+	private void handleFishClicked(final MotionEvent event) {
+		makeFishColor();
 	}
 
 	private void handleMoveActionEvent(final MotionEvent event) {
@@ -152,9 +181,7 @@ public class FishingView extends RelativeLayout {
 
 	private void handleUpActionEvent(final MotionEvent event) {
 		isFishSelected = false;
-
-		fishAnimation.stop();
-
+		makeFishBlackAndWhite();
 		invalidate();
 	}
 
@@ -166,7 +193,7 @@ public class FishingView extends RelativeLayout {
 	}
 
 	private void handleMoveFish(final MotionEvent event) {
-		fishAnimation.start();
+		animateFish();
 		updateFishCoordinates(event.getX(), event.getY());
 		requestLayout();
 		invalidate();
