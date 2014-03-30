@@ -6,7 +6,7 @@
     android:id="@+id/main"
     tools:context=".MainActivity" >
 
-    <jagodzinski.steve.hw4.fishing.FishingView
+    <jagodzinski.steve.hw4.fishing.view.FishingView
 	        android:id="@+id/fishingView"
 	        android:background="@android:color/white"
 	        android:layout_width="match_parent"

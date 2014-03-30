@@ -1,9 +1,12 @@
-package jagodzinski.steve.hw4.fishing;
+package jagodzinski.steve.hw4.fishing.view;
 
+import jagodzinski.steve.hw4.fishing.R;
+import jagodzinski.steve.hw4.fishing.service.LineAngleService;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.util.AttributeSet;
@@ -17,6 +20,8 @@ public class FishingView extends View {
 
 	private static final float MARGIN_TOP = 10f;
 
+	private static final LineAngleService lineAngleService = LineAngleService.getInstance();
+
 	private Paint paint;
 	
 	private Bitmap boatBitmap;
@@ -27,8 +32,10 @@ public class FishingView extends View {
 
 	private float fishingLinePoleLocationX;
 	private float fishingLinePoleLocationY;
-	private float fishingLinefishLocationX;
-	private float fishingLinefishLocationY;
+	private float fishingLineFishLocationX;
+	private float fishingLineFishLocationY;
+
+	private short angle;
 
 	private boolean isFishSelected;
 
@@ -46,6 +53,8 @@ public class FishingView extends View {
 	
 	private void init() {
 		paint = new Paint();
+		paint.setTextSize(14f);
+		paint.setColor(Color.BLACK);
 		
 		initBoatBitmap();
 		initFishBitmap();
@@ -53,6 +62,8 @@ public class FishingView extends View {
 		initFishingPoleCoordinates();
 		initFishCoordinates();
 		initFishingLineCoordinates();
+
+		updateLineAngle();
 	}
 	
 	private void initBoatBitmap() {
@@ -84,8 +95,8 @@ public class FishingView extends View {
 	}
 
 	private void updateFishingLineCoordinates() {
-		fishingLinefishLocationX = fishBitmapLocationX + 2;
-		fishingLinefishLocationY = fishBitmapLocationY + ((28 / 61f) * fishBitmap.getHeight());
+		fishingLineFishLocationX = fishBitmapLocationX + 2;
+		fishingLineFishLocationY = fishBitmapLocationY + ((28 / 61f) * fishBitmap.getHeight());
 	}
 
 	private void updateFishCoordinates(float newCenterPointX, float newCenterPointY) {
@@ -113,16 +124,21 @@ public class FishingView extends View {
 		drawBoat(canvas);
 		drawFish(canvas);
 		drawFishingLine(canvas);
+		drawAngle(canvas);
 	}
 	
+	private void drawAngle(Canvas canvas) {
+		canvas.drawText(Short.toString(angle) + (char) 0x00B0, fishingLinePoleLocationX - 40, fishingLinePoleLocationY + 20, paint);
+	}
+
 	private void drawBoat(final Canvas canvas) {
 		canvas.drawBitmap(boatBitmap, 0, MARGIN_TOP, null);
 	}
 
 	private void drawFishingLine(final Canvas canvas) {
 		Log.d(LOGGING_TAG, String.format("Drawing Fishing Line From %f, %f to %f, %f", fishingLinePoleLocationX, fishingLinePoleLocationY,
-				fishingLinefishLocationX, fishingLinefishLocationY));
-		canvas.drawLine(fishingLinePoleLocationX, fishingLinePoleLocationY, fishingLinefishLocationX, fishingLinefishLocationY, paint);
+				fishingLineFishLocationX, fishingLineFishLocationY));
+		canvas.drawLine(fishingLinePoleLocationX, fishingLinePoleLocationY, fishingLineFishLocationX, fishingLineFishLocationY, paint);
 	}
 
 	private void drawFish(final Canvas canvas) {
@@ -154,6 +170,7 @@ public class FishingView extends View {
 	private void handleMoveActionEvent(final MotionEvent event) {
 		if (isFishSelected()) {
 			handleMoveFish(event);
+			updateLineAngle();
 		}
 	}
 
@@ -179,5 +196,10 @@ public class FishingView extends View {
 		updateFishCoordinates(event.getX(), event.getY());
 		updateFishingLineCoordinates();
 		invalidate();
+	}
+
+	private void updateLineAngle() {
+		angle = (short) Math.round(lineAngleService.calculateLineAngle(fishingLinePoleLocationX, fishingLinePoleLocationY, fishingLineFishLocationX,
+				fishingLineFishLocationY));
 	}
 }

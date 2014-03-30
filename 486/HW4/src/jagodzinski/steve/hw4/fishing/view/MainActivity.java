@@ -1,9 +1,8 @@
-package jagodzinski.steve.hw4.fishing;
+package jagodzinski.steve.hw4.fishing.view;
 
 import jagodzinski.steve.hw4.fishing.R;
-
-import android.os.Bundle;
 import android.app.Activity;
+import android.os.Bundle;
 import android.view.Menu;
 
 public class MainActivity extends Activity {
@@ -21,5 +20,4 @@ public class MainActivity extends Activity {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
-    
 }
