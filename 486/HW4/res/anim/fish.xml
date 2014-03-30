@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<animation-list xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/selected" android:oneshot="false">
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/fish" android:oneshot="false">
     <item android:drawable="@drawable/fish0" android:duration="50" />
     <item android:drawable="@drawable/fish1" android:duration="50" />
     <item android:drawable="@drawable/fish2" android:duration="50" />
