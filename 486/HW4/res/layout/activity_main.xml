@@ -18,14 +18,14 @@
     
         <ImageView
             android:id="@+id/boat_image_view"
-            android:layout_width="588dp"
-            android:layout_height="315dp"
+            android:layout_width="@dimen/boat_width"
+            android:layout_height="@dimen/boat_height"
             android:src="@drawable/boat" />
 
         <ImageView
             android:id="@+id/fish_image_view"
-            android:layout_width="100dp"
-            android:layout_height="61dp"
+            android:layout_width="@dimen/fish_width"
+            android:layout_height="@dimen/fish_height"
             android:layout_below="@+id/boat_image_view"
             android:layout_toRightOf="@+id/boat_image_view"/>
         
@@ -34,6 +34,16 @@
 	        android:layout_width="match_parent"
 	        android:layout_height="match_parent"
 	        android:background="@android:color/transparent" />
+        
+        <TextView 
+            android:id="@+id/line_depth_text_view"
+            android:layout_toRightOf="@+id/boat_image_view"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/line_depth"
+            android:gravity="center_horizontal"
+			android:textAlignment="gravity"
+			android:visibility="invisible"/>        
         
 	</jagodzinski.steve.hw4.fishing.view.FishingView>
 

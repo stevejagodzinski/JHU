@@ -92,7 +92,7 @@ public class FishingView extends RelativeLayout {
 		int[] resultHolder = new int[2];
 		boatImage.getLocationInWindow(resultHolder);
 
-		float fishingLinePoleLocationX = .9f * boatImage.getWidth() + resultHolder[0];
+		float fishingLinePoleLocationX = getResources().getDimension(R.dimen.fishing_pole_location) + resultHolder[0];
 		float fishingLinePoleLocationY = resultHolder[1] + boatImage.getPaddingTop();
 
 		getLocationInWindow(resultHolder);
@@ -113,12 +113,12 @@ public class FishingView extends RelativeLayout {
 		fishImageLocationX -= resultHolder[0];
 		fishImageLocationY -= resultHolder[1];
 
-		fishingCanvas.onFishLocationChanged(fishImageLocationX, fishImageLocationY, fishImage.getHeight(), (28 / 61f));
+		fishingCanvas.onFishLocationChanged(fishImageLocationX, fishImageLocationY);
 	}
 
 	@Override
-	protected void onLayout(boolean changed, int l, int t, int r, int b) {
-		super.onLayout(changed, l, t, r, b);
+	protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+		super.onLayout(changed, left, top, right, bottom);
 
 		if (!isInitialized()) {
 			init();
@@ -135,7 +135,7 @@ public class FishingView extends RelativeLayout {
 		((RelativeLayout.LayoutParams) fishImage.getLayoutParams()).addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 		((RelativeLayout.LayoutParams) fishImage.getLayoutParams()).setMargins(((int) fishImageLocationX), ((int) fishImageLocationY), 0, 0);
 
-		fishingCanvas.onFishLocationChanged(fishImageLocationX, fishImageLocationY, fishImage.getHeight(), (28 / 61f));
+		fishingCanvas.onFishLocationChanged(fishImageLocationX, fishImageLocationY);
 	}
 
 	@Override

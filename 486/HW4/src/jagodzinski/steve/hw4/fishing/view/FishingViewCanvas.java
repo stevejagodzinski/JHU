@@ -50,7 +50,10 @@ public class FishingViewCanvas extends View implements FishingLayoutObserver, Li
 		paint.setColor(Color.BLACK);
 	}
 
-	private void updateFishingLineCoordinates(float imageHeight, float relativeMouthPosition) {
+	private void updateFishingLineCoordinates() {
+		float imageHeight = getResources().getDimension(R.dimen.fish_height);
+		float relativeMouthPosition = getResources().getDimension(R.dimen.fish_mouth_location) / imageHeight;
+
 		fishingLineFishLocationX = fishBitmapLocationX + 2;
 		fishingLineFishLocationY = fishBitmapLocationY + (relativeMouthPosition * imageHeight);
 	}
@@ -89,7 +92,10 @@ public class FishingViewCanvas extends View implements FishingLayoutObserver, Li
 	}
 
 	private void drawAngle(Canvas canvas) {
-		canvas.drawText(Short.toString(angle) + (char) 0x00B0, fishingLinePoleLocationX - 40, fishingLinePoleLocationY + 20, paint);
+		float xOffset = getResources().getDimension(R.dimen.angle_label_fishing_pole_margin_x);
+		float yOffset = getResources().getDimension(R.dimen.angle_label_fishing_pole_margin_y);
+
+		canvas.drawText(Short.toString(angle) + (char) 0x00B0, fishingLinePoleLocationX - xOffset, fishingLinePoleLocationY + yOffset, paint);
 	}
 
 	private void drawFishingLine(final Canvas canvas) {
@@ -104,11 +110,11 @@ public class FishingViewCanvas extends View implements FishingLayoutObserver, Li
 	}
 
 	@Override
-	public void onFishLocationChanged(float newX, float newY, float imageHeight, float relativeMouthPosition) {
+	public void onFishLocationChanged(float newX, float newY) {
 		fishBitmapLocationX = newX;
 		fishBitmapLocationY = newY;
 
-		updateFishingLineCoordinates(imageHeight, relativeMouthPosition);
+		updateFishingLineCoordinates();
 		updateLineAngle();
 		invalidate();
 	}
