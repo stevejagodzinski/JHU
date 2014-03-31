@@ -1,7 +1,14 @@
 package jagodzinski.steve.hw4.fishing.view;
 
 import jagodzinski.steve.hw4.fishing.R;
-import jagodzinski.steve.hw4.fishing.controller.FishingLayoutObserver;
+import jagodzinski.steve.hw4.fishing.controller.FishLocationObserver;
+import jagodzinski.steve.hw4.fishing.controller.FishingController;
+import jagodzinski.steve.hw4.fishing.controller.FishingRodObserver;
+import jagodzinski.steve.hw4.fishing.controller.LineDepthObserver;
+
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -11,14 +18,16 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
-public class FishingView extends RelativeLayout {
+public class FishingView extends RelativeLayout implements LineDepthObserver {
 	
 	private static final String LOGGING_TAG = FishingView.class.getName();
 
-	private Paint paint;
+	private List<FishLocationObserver> fishLocationObservers;
+	private List<FishingRodObserver> fishingRodObserver;
 
-	private FishingLayoutObserver fishingCanvas;
+	private Paint paint;
 
 	private ImageView boatImage;
 
@@ -29,6 +38,8 @@ public class FishingView extends RelativeLayout {
 	private float fishImageLocationY;
 
 	private boolean isFishSelected;
+
+	private TextView lineDepthTextView;
 
 	public FishingView(Context context) {
 		super(context);
@@ -53,14 +64,44 @@ public class FishingView extends RelativeLayout {
 
 		initBoatBitmap();
 		initFishBitmap();
-		initFishingViewCanvas();
+		initLineDepthTextView();
+
+		initFishingRodLocationObservers();
+		initFishLocationChangedObservers();
+		initObservationOnController();
 
 		initFishingPoleCoordinates();
 		initFishCoordinates();
 	}
 	
-	private void initFishingViewCanvas() {
-		fishingCanvas = (FishingLayoutObserver) findViewById(R.id.fishingViewCanvas);
+	private void initObservationOnController() {
+		FishingController.getInstance().addLineDepthObserverObserver(this);
+	}
+
+	private void initFishLocationChangedObservers() {
+		fishLocationObservers = new CopyOnWriteArrayList<FishLocationObserver>();
+		fishLocationObservers.add(FishingController.getInstance());
+	}
+
+	private void initFishingRodLocationObservers() {
+		fishingRodObserver = new CopyOnWriteArrayList<FishingRodObserver>();
+		fishingRodObserver.add(FishingController.getInstance());
+	}
+
+	private void notifyFishLocationChangedObservers() {
+		for (FishLocationObserver observer : fishLocationObservers) {
+			observer.onFishLocationChanged(fishImageLocationX, fishImageLocationY, getResources());
+		}
+	}
+
+	private void notifyFishingRodLocationChangedObservers(float fishingLinePoleLocationX, float fishingLinePoleLocationY) {
+		for (FishingRodObserver observer : fishingRodObserver) {
+			observer.onFishingRodLocationChanged(fishingLinePoleLocationX, fishingLinePoleLocationY, getResources());
+		}
+	}
+
+	private void initLineDepthTextView() {
+		lineDepthTextView = (TextView) findViewById(R.id.line_depth_text_view);
 	}
 
 	private void initBoatBitmap() {
@@ -99,7 +140,7 @@ public class FishingView extends RelativeLayout {
 		fishingLinePoleLocationX -= resultHolder[0];
 		fishingLinePoleLocationY -= resultHolder[1];
 
-		fishingCanvas.onFishingRodLocationChanged(fishingLinePoleLocationX, fishingLinePoleLocationY);
+		notifyFishingRodLocationChangedObservers(fishingLinePoleLocationX, fishingLinePoleLocationY);
 	}
 
 	private void initFishCoordinates() {
@@ -113,7 +154,7 @@ public class FishingView extends RelativeLayout {
 		fishImageLocationX -= resultHolder[0];
 		fishImageLocationY -= resultHolder[1];
 
-		fishingCanvas.onFishLocationChanged(fishImageLocationX, fishImageLocationY);
+		notifyFishLocationChangedObservers();
 	}
 
 	@Override
@@ -135,7 +176,7 @@ public class FishingView extends RelativeLayout {
 		((RelativeLayout.LayoutParams) fishImage.getLayoutParams()).addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 		((RelativeLayout.LayoutParams) fishImage.getLayoutParams()).setMargins(((int) fishImageLocationX), ((int) fishImageLocationY), 0, 0);
 
-		fishingCanvas.onFishLocationChanged(fishImageLocationX, fishImageLocationY);
+		notifyFishLocationChangedObservers();
 	}
 
 	@Override
@@ -197,5 +238,11 @@ public class FishingView extends RelativeLayout {
 		updateFishCoordinates(event.getX(), event.getY());
 		requestLayout();
 		invalidate();
+	}
+
+	@Override
+	public void onLineDepthChanged(Integer newLineDepth) {
+		lineDepthTextView.setText(getResources().getString(R.string.line_depth, newLineDepth));
+		lineDepthTextView.setVisibility(TextView.VISIBLE);
 	}
 }

@@ -1,9 +1,10 @@
 package jagodzinski.steve.hw4.fishing.view;
 
 import jagodzinski.steve.hw4.fishing.R;
-import jagodzinski.steve.hw4.fishing.controller.FishingLayoutObserver;
+import jagodzinski.steve.hw4.fishing.controller.AngleChangeObserver;
+import jagodzinski.steve.hw4.fishing.controller.FishingController;
+import jagodzinski.steve.hw4.fishing.controller.FishingLineEndpointsObserver;
 import jagodzinski.steve.hw4.fishing.controller.LineLengthObserver;
-import jagodzinski.steve.hw4.fishing.service.LineAngleService;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -12,25 +13,20 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
-public class FishingViewCanvas extends View implements FishingLayoutObserver, LineLengthObserver {
+public class FishingViewCanvas extends View implements AngleChangeObserver, FishingLineEndpointsObserver, LineLengthObserver {
 	
 	private static final String LOGGING_TAG = FishingViewCanvas.class.getName();
 
-	private static final LineAngleService lineAngleService = LineAngleService.getInstance();
-
 	private Paint paint;
-
-	private float fishBitmapLocationX;
-	private float fishBitmapLocationY;
 
 	private float fishingLinePoleLocationX;
 	private float fishingLinePoleLocationY;
 	private float fishingLineFishLocationX;
 	private float fishingLineFishLocationY;
 
-	private short angle;
-
 	private Integer lineLenght;
+
+	private short angle;
 
 	public FishingViewCanvas(Context context) {
 		super(context);
@@ -48,14 +44,13 @@ public class FishingViewCanvas extends View implements FishingLayoutObserver, Li
 		paint = new Paint();
 		paint.setTextSize(14f);
 		paint.setColor(Color.BLACK);
+
+		initObservationOnController();
 	}
 
-	private void updateFishingLineCoordinates() {
-		float imageHeight = getResources().getDimension(R.dimen.fish_height);
-		float relativeMouthPosition = getResources().getDimension(R.dimen.fish_mouth_location) / imageHeight;
-
-		fishingLineFishLocationX = fishBitmapLocationX + 2;
-		fishingLineFishLocationY = fishBitmapLocationY + (relativeMouthPosition * imageHeight);
+	private void initObservationOnController() {
+		FishingController.getInstance().addAngleChangeObserver(this, true);
+		FishingController.getInstance().addFishingLineEndpointsObserver(this, true);
 	}
 
 	private boolean isInitialized() {
@@ -104,33 +99,25 @@ public class FishingViewCanvas extends View implements FishingLayoutObserver, Li
 		canvas.drawLine(fishingLinePoleLocationX, fishingLinePoleLocationY, fishingLineFishLocationX, fishingLineFishLocationY, paint);
 	}
 
-	private void updateLineAngle() {
-		angle = (short) Math.round(lineAngleService.calculateLineAngle(fishingLinePoleLocationX, fishingLinePoleLocationY, fishingLineFishLocationX,
-				fishingLineFishLocationY));
-	}
-
 	@Override
-	public void onFishLocationChanged(float newX, float newY) {
-		fishBitmapLocationX = newX;
-		fishBitmapLocationY = newY;
-
-		updateFishingLineCoordinates();
-		updateLineAngle();
-		invalidate();
-	}
-
-	@Override
-	public void onFishingRodLocationChanged(float newX, float newY) {
-		fishingLinePoleLocationX = newX;
-		fishingLinePoleLocationY = newY;
-
-		updateLineAngle();
+	public void onFishingLineEndpointsChanged(float fishingLinePoleLocationX, float fishingLinePoleLocationY, float fishingLineFishLocationX,
+			float fishingLineFishLocationY) {
+		this.fishingLineFishLocationX = fishingLineFishLocationX;
+		this.fishingLineFishLocationY = fishingLineFishLocationY;
+		this.fishingLinePoleLocationX = fishingLinePoleLocationX;
+		this.fishingLinePoleLocationY = fishingLinePoleLocationY;
 		invalidate();
 	}
 
 	@Override
 	public void onLineLengthChange(int newLineLength) {
-		lineLenght = newLineLength;
+		this.lineLenght = newLineLength;
+		invalidate();
+	}
+
+	@Override
+	public void onAngleChange(short newAngle) {
+		this.angle = newAngle;
 		invalidate();
 	}
 }
