@@ -1,6 +1,8 @@
 package jagodzinski.steve.hw4.fishing.view;
 
+import jagodzinski.steve.hw4.fishing.R;
 import jagodzinski.steve.hw4.fishing.controller.FishingLayoutObserver;
+import jagodzinski.steve.hw4.fishing.controller.LineLengthObserver;
 import jagodzinski.steve.hw4.fishing.service.LineAngleService;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -10,7 +12,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
-public class FishingViewCanvas extends View implements FishingLayoutObserver {
+public class FishingViewCanvas extends View implements FishingLayoutObserver, LineLengthObserver {
 	
 	private static final String LOGGING_TAG = FishingViewCanvas.class.getName();
 
@@ -27,6 +29,8 @@ public class FishingViewCanvas extends View implements FishingLayoutObserver {
 	private float fishingLineFishLocationY;
 
 	private short angle;
+
+	private Integer lineLenght;
 
 	public FishingViewCanvas(Context context) {
 		super(context);
@@ -69,6 +73,19 @@ public class FishingViewCanvas extends View implements FishingLayoutObserver {
 
 		drawFishingLine(canvas);
 		drawAngle(canvas);
+		drawLineLength(canvas);
+	}
+
+	private void drawLineLength(Canvas canvas) {
+		String text;
+
+		if (lineLenght == null) {
+			text = getResources().getString(R.string.set_line_length);
+		} else {
+			text = getResources().getString(R.string.ft, lineLenght);
+		}
+
+		// TODO: Display line length text on path above line
 	}
 
 	private void drawAngle(Canvas canvas) {
@@ -102,6 +119,12 @@ public class FishingViewCanvas extends View implements FishingLayoutObserver {
 		fishingLinePoleLocationY = newY;
 
 		updateLineAngle();
+		invalidate();
+	}
+
+	@Override
+	public void onLineLengthChange(int newLineLength) {
+		lineLenght = newLineLength;
 		invalidate();
 	}
 }
