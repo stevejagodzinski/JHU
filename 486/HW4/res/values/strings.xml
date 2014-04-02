@@ -5,6 +5,6 @@
     <string name="action_settings">Settings</string>
     <string name="ft">%1$s ft.</string>
     <string name="set_line_length">Set Line Length</string>
-    <string name="line_depth">Line Depth</string>
+    <string name="line_depth">Line Depth %1$d</string>
 
 </resources>

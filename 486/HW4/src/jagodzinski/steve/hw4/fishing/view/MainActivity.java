@@ -1,7 +1,12 @@
 package jagodzinski.steve.hw4.fishing.view;
 
 import jagodzinski.steve.hw4.fishing.R;
+import jagodzinski.steve.hw4.fishing.controller.FishingController;
 import jagodzinski.steve.hw4.fishing.controller.LineLengthObserver;
+
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -13,16 +18,27 @@ import android.widget.EditText;
 
 public class MainActivity extends Activity {
 
-	private LineLengthObserver fishingViewCanvas;
+	private List<LineLengthObserver> lineLengthObservers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-		fishingViewCanvas = (LineLengthObserver) findViewById(R.id.fishingViewCanvas);
+		initLineLengthObservers();
     }
 
+	private void initLineLengthObservers() {
+		lineLengthObservers = new CopyOnWriteArrayList<LineLengthObserver>();
+		lineLengthObservers.add(FishingController.getInstance());
+		lineLengthObservers.add((LineLengthObserver) findViewById(R.id.fishingViewCanvas));
+	}
+
+	private void notifyLineLengthObservers(int newLineLength) {
+		for (LineLengthObserver observer : lineLengthObservers) {
+			observer.onLineLengthChange(newLineLength);
+		}
+	}
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -62,7 +78,7 @@ public class MainActivity extends Activity {
 		alert.setPositiveButton(getResources().getString(android.R.string.ok), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				String value = input.getText().toString();
-				fishingViewCanvas.onLineLengthChange(Integer.valueOf(value));
+				notifyLineLengthObservers(Integer.valueOf(value));
 			}
 		});
 
