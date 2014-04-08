@@ -24,39 +24,52 @@ public class CustomerLookupByIdsController extends HttpServlet
 	private static final long serialVersionUID = 1L;
 
 	@Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-    {
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	{
 		Collection<CustomerAccountSummary> customerAccountSummaries = getCustomerAccountSummaries(request);
 
-        setResponseHeaders(response);
+		setResponseHeaders(response);
 
 		ResponseStrategy responseStrategy = JSONResponseFormatStrategy.getInstance();
 		String ajaxResponseBody = responseStrategy.toResponse(customerAccountSummaries);
 		response.getWriter().write(ajaxResponseBody);
-    }
+	}
 
-	private void setResponseHeaders(HttpServletResponse response)
-    {
-        response.setHeader("Cache-Control", "no-cache");
+	private void setResponseHeaders(final HttpServletResponse response)
+	{
+		addNoCacheHeaders(response);
+		addJSONContentTypeHeader(response);
+	}
+
+	private void addNoCacheHeaders(final HttpServletResponse response)
+	{
+		response.setHeader("Cache-Control", "no-cache");
+		response.setHeader("Pragma", "no-cache");
+	}
+
+	private void addJSONContentTypeHeader(final HttpServletResponse response)
+	{
 		response.setHeader("Content-type", "application/json");
-        response.setHeader("Pragma", "no-cache");
-    }
-    
-    private Collection<CustomerAccountSummary> getCustomerAccountSummaries(HttpServletRequest request) {
-        List<String> customerIds = getCustomerIds(request);    	
+	}
 
-        CustomerLookupService customerLookupService = CustomerLookupService.getInstance();
-        return customerLookupService.getAllCustomers(customerIds);
-    }
-    
-    private List<String> getCustomerIds(HttpServletRequest request) {
-    	List<String> customerIds = Arrays.asList(StringUtils.split(request.getParameter("customerIds"), ','));
-    	List<String> trimmedCustomerIds = new ArrayList<>(customerIds.size());
+	private Collection<CustomerAccountSummary> getCustomerAccountSummaries(HttpServletRequest request)
+	{
+		List<String> customerIds = getCustomerIds(request);
 
-    	for(String customerId : customerIds) {
-    		trimmedCustomerIds.add(customerId.trim());
-    	}
+		CustomerLookupService customerLookupService = CustomerLookupService.getInstance();
+		return customerLookupService.getAllCustomers(customerIds);
+	}
 
-    	return trimmedCustomerIds;
-    }
+	private List<String> getCustomerIds(HttpServletRequest request)
+	{
+		List<String> customerIds = Arrays.asList(StringUtils.split(request.getParameter("customerIds"), ','));
+		List<String> trimmedCustomerIds = new ArrayList<>(customerIds.size());
+
+		for (String customerId : customerIds)
+		{
+			trimmedCustomerIds.add(customerId.trim());
+		}
+
+		return trimmedCustomerIds;
+	}
 }
