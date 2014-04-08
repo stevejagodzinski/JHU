@@ -2,9 +2,14 @@ function findCustomersByIDs(resultRegion) {
 	
 	new Ajax.Request("GetCustomersByIDs", {
 		method:'get',
+		onCreate  : function() { showWaiting(resultRegion); },
 		onSuccess : function(response) { buildTableFromProtoypeResponse(response, resultRegion); },
 		parameters : {customerIds : $F("customerIds")}
 	});
+}
+
+function showWaiting(resultRegion) {
+	$(resultRegion).update('Waiting');
 }
 
 function buildTableFromProtoypeResponse(response, resultRegion) {

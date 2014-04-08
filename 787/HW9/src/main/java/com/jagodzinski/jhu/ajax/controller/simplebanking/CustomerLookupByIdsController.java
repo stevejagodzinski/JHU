@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -26,6 +27,8 @@ public class CustomerLookupByIdsController extends HttpServlet
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
+		simlateLongRunningServerResponse();
+
 		Collection<CustomerAccountSummary> customerAccountSummaries = getCustomerAccountSummaries(request);
 
 		setResponseHeaders(response);
@@ -71,5 +74,17 @@ public class CustomerLookupByIdsController extends HttpServlet
 		}
 
 		return trimmedCustomerIds;
+	}
+
+	private void simlateLongRunningServerResponse()
+	{
+		try
+		{
+			Thread.sleep(TimeUnit.SECONDS.toMillis(5));
+		}
+		catch (InterruptedException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 }
