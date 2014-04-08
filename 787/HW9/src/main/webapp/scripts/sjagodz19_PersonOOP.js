@@ -54,8 +54,27 @@ var Contractor = Class.create(Person, {
 
 function createPerson() {
 	var person = new Person();
-	person.setFirstName($F('firstName'));
-	person.setLastName($F('lastName'));
-	person.setAddress($F('address'));
+	person.setFirstName($F('personFirstName'));
+	person.setLastName($F('personLastName'));
+	person.setAddress($F('personAddress'));
 	person.showAlert();
+}
+
+function createEmployee() {
+	var contractor = new Employee();
+	contractor.setFirstName($F('employeeFirstName'));
+	contractor.setLastName($F('employeeLastName'));
+	contractor.setAddress($F('employeeAddress'));
+	contractor.setEmployeeId($F('employeeId'));
+	contractor.showAlert();
+}
+
+function createContractor() {
+	var contractor = new Contractor();
+	contractor.setFirstName($F('contractorFirstName'));
+	contractor.setLastName($F('contractorLastName'));
+	contractor.setAddress($F('contractorAddress'));
+	contractor.setContractingCompany($F('contractorContractingCompany'));
+	contractor.setContractorId($F('contractorId'));
+	contractor.showAlert();
 }
