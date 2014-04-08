@@ -1,18 +1,17 @@
-function findCustomersByIDs() {
-    var baseAddress = "GetCustomersByIDs";
-    var data = "customerIds=" + getValue('customerIds');
-    var address = baseAddress + "?" + data;
-    ajaxResult(address, 'findCustomersByIdsResult', buildTableFromJSONArray);
+function findCustomersByIDs(resultRegion) {
+	
+	new Ajax.Request("GetCustomersByIDs", {
+		method:'get',
+		onSuccess : function(response) { buildTableFromProtoypeResponse(response, resultRegion); },
+		parameters : {customerIds : $F("customerIds")}
+	});
 }
 
-function buildTableFromJSONArray(request, resultRegion) {
-	if ((request.readyState == 4) &&
-		      (request.status == 200)) {
-		var customers = fromJSONArray(request.responseText);
-		var table = buildTable(customers);
-		htmlInsert(resultRegion, table);
-	}
+function buildTableFromProtoypeResponse(response, resultRegion) {
+	var table = buildTable(response.responseJSON);
+	$(resultRegion).update(table);
 }
+
 
 function buildTable(customers) {
 	var table = "<table>" +

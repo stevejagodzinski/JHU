@@ -28,16 +28,17 @@ public class CustomerLookupByIdsController extends HttpServlet
     {
 		Collection<CustomerAccountSummary> customerAccountSummaries = getCustomerAccountSummaries(request);
 
-        setNoCacheResponseHeaders(response);
+        setResponseHeaders(response);
 
 		ResponseStrategy responseStrategy = JSONResponseFormatStrategy.getInstance();
 		String ajaxResponseBody = responseStrategy.toResponse(customerAccountSummaries);
 		response.getWriter().write(ajaxResponseBody);
     }
 
-    private void setNoCacheResponseHeaders(HttpServletResponse response)
+	private void setResponseHeaders(HttpServletResponse response)
     {
         response.setHeader("Cache-Control", "no-cache");
+		response.setHeader("Content-type", "application/json");
         response.setHeader("Pragma", "no-cache");
     }
     
