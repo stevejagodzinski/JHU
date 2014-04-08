@@ -36,3 +36,6 @@ h2 { color: #440000;
 	      font-family: Arial, Helvetica, sans-serif;
 	      border-style: inset;
 }
+.inputFormLabel {
+	text-align:right;
+}
