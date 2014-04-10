@@ -20,14 +20,17 @@ import com.jagodzinski.jhu.ajax.controller.dataformat.ResponseStrategy;
 import com.jagodzinski.jhu.ajax.model.simplebanking.CustomerAccountSummary;
 
 @WebServlet("/GetCustomersByIDs")
-public class CustomerLookupByIdsController extends HttpServlet
+public class CustomerLookupByIds extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
 
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
-		simlateLongRunningServerResponse();
+		if (shouldSimlateLongRunningServerResponse(request))
+		{
+			simlateLongRunningServerResponse();
+		}
 
 		Collection<CustomerAccountSummary> customerAccountSummaries = getCustomerAccountSummaries(request);
 
@@ -63,7 +66,7 @@ public class CustomerLookupByIdsController extends HttpServlet
 		return customerLookupService.getAllCustomers(customerIds);
 	}
 
-	private List<String> getCustomerIds(HttpServletRequest request)
+	private List<String> getCustomerIds(final HttpServletRequest request)
 	{
 		List<String> customerIds = Arrays.asList(StringUtils.split(request.getParameter("customerIds"), ','));
 		List<String> trimmedCustomerIds = new ArrayList<>(customerIds.size());
@@ -74,6 +77,12 @@ public class CustomerLookupByIdsController extends HttpServlet
 		}
 
 		return trimmedCustomerIds;
+	}
+
+	private boolean shouldSimlateLongRunningServerResponse(final HttpServletRequest request)
+	{
+		return StringUtils.equalsIgnoreCase(request.getParameter("simlateLongRunningServerResponse"),
+				Boolean.TRUE.toString());
 	}
 
 	private void simlateLongRunningServerResponse()

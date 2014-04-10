@@ -1,10 +1,13 @@
-function findCustomersByIDs(resultRegion) {
+function findCustomersByIDsUsingPrototypeJS(resultRegion) {
 	
 	new Ajax.Request("GetCustomersByIDs", {
 		method:'get',
 		onCreate  : function() { showWaiting(resultRegion); },
 		onSuccess : function(response) { buildTableFromProtoypeResponse(response, resultRegion); },
-		parameters : {customerIds : $F("customerIds")}
+		parameters : {
+			customerIds : $F("customerIds"),
+			simlateLongRunningServerResponse : true
+		}
 	});
 }
 
@@ -30,4 +33,23 @@ function buildTable(customers) {
 	};
 	
 	return table;
+}
+
+function findCustomersByIDsUsingAjaxRequestObject(resultRegion) {
+	var customerIds = "customerIds=" + getValue('customerIds');
+	
+	new AjaxRequest("GetCustomersByIDs", {
+		method:'get',
+		onSuccess : function(response) { buildTableFromJSONArray(response, resultRegion); },
+		parameters : customerIds
+	});
+}
+
+function buildTableFromJSONArray(request, resultRegion) {
+	if ((request.readyState == 4) &&
+		      (request.status == 200)) {
+		var customers = fromJSONArray(request.responseText);
+		var table = buildTable(customers);
+		htmlInsert(resultRegion, table);
+	}
 }
