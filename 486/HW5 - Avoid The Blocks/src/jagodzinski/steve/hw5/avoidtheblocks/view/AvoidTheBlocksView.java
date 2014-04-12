@@ -217,22 +217,24 @@ Math.min(playerPosition.y + playerVelocity * (animationRefreshIntervalMS / 1000.
 	}
 
 	private void checkForCollisions() {
-		Point topLeft = new Point(playerPosition.x - PLAYER_SIZE, playerPosition.y - PLAYER_SIZE);
-		Point topRight = new Point(playerPosition.x + PLAYER_SIZE, playerPosition.y - PLAYER_SIZE);
-		Point bottomRight = new Point(playerPosition.x + PLAYER_SIZE, playerPosition.y + PLAYER_SIZE);
-		Point bottomLeft = new Point(playerPosition.x - PLAYER_SIZE, playerPosition.y + PLAYER_SIZE);
+		if (playerPosition != null) {
+			Point topLeft = new Point(playerPosition.x - PLAYER_SIZE, playerPosition.y - PLAYER_SIZE);
+			Point topRight = new Point(playerPosition.x + PLAYER_SIZE, playerPosition.y - PLAYER_SIZE);
+			Point bottomRight = new Point(playerPosition.x + PLAYER_SIZE, playerPosition.y + PLAYER_SIZE);
+			Point bottomLeft = new Point(playerPosition.x - PLAYER_SIZE, playerPosition.y + PLAYER_SIZE);
 
-		boolean collision = false;
+			boolean collision = false;
 
-		for (Point block : blocks) {
-			if (isCollision(topLeft, block) || isCollision(topRight, block) || isCollision(bottomLeft, block) || isCollision(bottomRight, block)) {
-				collision = true;
-				break;
+			for (Point block : blocks) {
+				if (isCollision(topLeft, block) || isCollision(topRight, block) || isCollision(bottomLeft, block) || isCollision(bottomRight, block)) {
+					collision = true;
+					break;
+				}
 			}
-		}
 
-		if (collision) {
-			handler.post(collisionHandler);
+			if (collision) {
+				handler.post(collisionHandler);
+			}
 		}
 	}
 

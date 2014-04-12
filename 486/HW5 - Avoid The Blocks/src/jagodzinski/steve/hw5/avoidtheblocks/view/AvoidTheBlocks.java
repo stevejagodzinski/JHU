@@ -1,11 +1,10 @@
 package jagodzinski.steve.hw5.avoidtheblocks.view;
 
+import jagodzinki.steve.hw5.avoidtheblocks.R;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
-
-import com.example.jagodzinki.steve.hw5.avoidtheblocks.R;
 
 public class AvoidTheBlocks extends Activity {
 
