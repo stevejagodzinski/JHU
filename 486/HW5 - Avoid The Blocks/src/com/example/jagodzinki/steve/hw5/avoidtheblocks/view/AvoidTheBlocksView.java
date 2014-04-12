@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -19,7 +20,13 @@ public class AvoidTheBlocksView extends View {
 
 	private static final String LOGGING_TAG = AvoidTheBlocksView.class.getName();
 
+	private long animationRefreshIntervalMS = 10;
+
 	private Collection<Point> blocks = new LinkedList<Point>();
+
+	private Point playerPosition;
+	private float playerVelocity;
+	private float playerAcceleration;
 
 	private Handler handler = new Handler();
 
@@ -30,7 +37,8 @@ public class AvoidTheBlocksView extends View {
 		}
 	};
 
-	private Paint paint;
+	private Paint yellowPaint;
+	private Paint greenPaint;
 
 	private Thread animationThread;
 	private Thread blockCreationThread;
@@ -48,7 +56,7 @@ public class AvoidTheBlocksView extends View {
 	}
 
 	private boolean isInitialized() {
-		return paint != null;
+		return yellowPaint != null;
 	}
 
 	@Override
@@ -64,19 +72,30 @@ public class AvoidTheBlocksView extends View {
 		}
 
 		drawBlocks(canvas);
+		drawPlayer(canvas);
 	}
 
 	private void init() {
-		paint = new Paint();
-		paint.setColor(Color.YELLOW);
+		yellowPaint = new Paint();
+		yellowPaint.setColor(Color.YELLOW);
+
+		greenPaint = new Paint();
+		greenPaint.setColor(Color.GREEN);
+
+		playerPosition = new Point(20, getHeight() / 2);
 	}
 
 	private void drawBlocks(final Canvas canvas) {
 		synchronized (blocks) {
 			for (Point block : blocks) {
-				canvas.drawCircle(block.x, block.y, 20, paint);
+				canvas.drawCircle(block.x, block.y, 20, yellowPaint);
 			}
 		}
+	}
+
+	private void drawPlayer(Canvas canvas) {
+		canvas.drawRect(playerPosition.x - 5, playerPosition.y - 5, playerPosition.x + 5, playerPosition.y + 5,
+				greenPaint);
 	}
 
 	public void start() {
@@ -105,6 +124,8 @@ public class AvoidTheBlocksView extends View {
 		@Override
 		public void run() {
 			while (!isInterrupted()) {
+				movePlayer();
+
 				synchronized (blocks) {
 					moveBlocksDown();
 					removeOffScreenBlocks();
@@ -112,10 +133,25 @@ public class AvoidTheBlocksView extends View {
 
 				handler.post(invalidator);
 				try {
-					sleep(10);
+					sleep(animationRefreshIntervalMS);
 				} catch (InterruptedException e) {
 					interrupt();
 				}
+			}
+		}
+
+		private void movePlayer() {
+			if (playerPosition != null) {
+				playerVelocity += playerAcceleration * TimeUnit.MILLISECONDS.toSeconds(animationRefreshIntervalMS);
+				playerPosition.y = (int) Math.max(
+						Math.min(
+								playerPosition.y + playerVelocity *
+										TimeUnit.MILLISECONDS.toSeconds(animationRefreshIntervalMS), getWidth()), 0);
+
+				Log.d(LOGGING_TAG, "Player moved.");
+				Log.d(LOGGING_TAG, "Player acceleration: " + playerAcceleration);
+				Log.d(LOGGING_TAG, "Player velocity: " + playerVelocity);
+				Log.d(LOGGING_TAG, "Player position: (" + playerPosition.x + ", " + playerPosition.y + ")");
 			}
 		}
 
@@ -161,5 +197,9 @@ public class AvoidTheBlocksView extends View {
 		private Point createNewBlock() {
 			return new Point(getWidth(), new Random().nextInt(getHeight()));
 		}
+	}
+
+	public void acceleratePlayer(int acceleration) {
+		playerAcceleration = acceleration;
 	}
 }
