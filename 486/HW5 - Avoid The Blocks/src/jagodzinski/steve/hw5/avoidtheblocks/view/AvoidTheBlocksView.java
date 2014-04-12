@@ -91,7 +91,8 @@ public class AvoidTheBlocksView extends View {
 		greenPaint = new Paint();
 		greenPaint.setColor(Color.GREEN);
 
-		playerPosition = new Point(20, getHeight() / 2);
+		// TODO: move to dimens
+		playerPosition = new Point(getWidth() / 2, getHeight() - 20);
 	}
 
 	private void drawBlocks(final Canvas canvas) {
@@ -153,11 +154,10 @@ public class AvoidTheBlocksView extends View {
 		private void movePlayer() {
 			if (playerPosition != null) {
 				playerVelocity += playerAcceleration * (animationRefreshIntervalMS / 1000.0);
-				playerPosition.y = (int) Math.max(
-Math.min(playerPosition.y + playerVelocity * (animationRefreshIntervalMS / 1000.0),
+				playerPosition.x = (int) Math.max(Math.min(playerPosition.x + playerVelocity * (animationRefreshIntervalMS / 1000.0),
 								getWidth()), 0);
 
-				if (playerPosition.y == 0 || playerPosition.y == getWidth()) {
+				if ((playerPosition.x == 0 && playerAcceleration <= 0) || (playerPosition.x == getWidth() && playerAcceleration >= 0)) {
 					playerVelocity = 0;
 				}
 
@@ -170,7 +170,7 @@ Math.min(playerPosition.y + playerVelocity * (animationRefreshIntervalMS / 1000.
 
 		private void moveBlocksDown() {
 			for (Point point : blocks) {
-				point.x--;
+				point.y++;
 			}
 
 		}
@@ -181,6 +181,7 @@ Math.min(playerPosition.y + playerVelocity * (animationRefreshIntervalMS / 1000.
 			while (blockIterator.hasNext()) {
 				if (blockIterator.next().y > getHeight()) {
 					blockIterator.remove();
+					Log.i(LOGGING_TAG, "Block removed from screen");
 				}
 			}
 		}
@@ -208,7 +209,7 @@ Math.min(playerPosition.y + playerVelocity * (animationRefreshIntervalMS / 1000.
 		}
 
 		private Point createNewBlock() {
-			return new Point(getWidth(), new Random().nextInt(getHeight()));
+			return new Point(new Random().nextInt(getWidth()), 0);
 		}
 	}
 
