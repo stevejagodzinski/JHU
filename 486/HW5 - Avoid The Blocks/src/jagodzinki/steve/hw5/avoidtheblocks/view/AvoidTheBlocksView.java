@@ -1,4 +1,4 @@
-package com.example.jagodzinki.steve.hw5.avoidtheblocks.view;
+package jagodzinki.steve.hw5.avoidtheblocks.view;
 
 import java.util.Collection;
 import java.util.Iterator;
