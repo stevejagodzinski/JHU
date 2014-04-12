@@ -7,7 +7,7 @@
     android:background="@android:color/black"
     tools:context=".AvoidTheBlocks" >
 
-    <jagodzinki.steve.hw5.avoidtheblocks.view.AvoidTheBlocksView
+    <jagodzinski.steve.hw5.avoidtheblocks.view.AvoidTheBlocksView
         xmlns:android="http://schemas.android.com/apk/res/android"
 	    xmlns:tools="http://schemas.android.com/tools"
 	    android:id="@+id/avoidTheBlocksView"

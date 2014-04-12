@@ -15,7 +15,7 @@
         android:theme="@style/AppTheme"
         android:screenOrientation="landscape" >
         <activity
-            android:name="jagodzinki.steve.hw5.avoidtheblocks.view.AvoidTheBlocks"
+            android:name="jagodzinski.steve.hw5.avoidtheblocks.view.AvoidTheBlocks"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

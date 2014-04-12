@@ -1,4 +1,4 @@
-package jagodzinki.steve.hw5.avoidtheblocks.view;
+package jagodzinski.steve.hw5.avoidtheblocks.view;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -40,12 +40,12 @@ public class AvoidTheBlocks extends Activity {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		switch (keyCode) {
-			case KeyEvent.KEYCODE_DPAD_RIGHT:
+			case KeyEvent.KEYCODE_D:
 				dpadAcceleration += KEYPAD_ACCELERATION_FACTOR;
 				Log.d(LOGGING_TAG, "Accelerating player right. Acceleration: " + dpadAcceleration);
 				avoidTheBlocksView.acceleratePlayer(dpadAcceleration);
 				break;
-			case KeyEvent.KEYCODE_DPAD_LEFT:
+			case KeyEvent.KEYCODE_A:
 				dpadAcceleration -= KEYPAD_ACCELERATION_FACTOR;
 				Log.d(LOGGING_TAG, "Accelerating player left. Acceleration: " + dpadAcceleration);
 				avoidTheBlocksView.acceleratePlayer(dpadAcceleration);

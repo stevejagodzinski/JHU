@@ -1,10 +1,9 @@
-package jagodzinki.steve.hw5.avoidtheblocks.view;
+package jagodzinski.steve.hw5.avoidtheblocks.view;
 
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -142,11 +141,14 @@ public class AvoidTheBlocksView extends View {
 
 		private void movePlayer() {
 			if (playerPosition != null) {
-				playerVelocity += playerAcceleration * TimeUnit.MILLISECONDS.toSeconds(animationRefreshIntervalMS);
+				playerVelocity += playerAcceleration * (animationRefreshIntervalMS / 1000.0);
 				playerPosition.y = (int) Math.max(
-						Math.min(
-								playerPosition.y + playerVelocity *
-										TimeUnit.MILLISECONDS.toSeconds(animationRefreshIntervalMS), getWidth()), 0);
+Math.min(playerPosition.y + playerVelocity * (animationRefreshIntervalMS / 1000.0),
+								getWidth()), 0);
+
+				if (playerPosition.y == 0 || playerPosition.y == getWidth()) {
+					playerVelocity = 0;
+				}
 
 				Log.d(LOGGING_TAG, "Player moved.");
 				Log.d(LOGGING_TAG, "Player acceleration: " + playerAcceleration);
