@@ -1,11 +1,14 @@
 package jagodzinski.steve.hw5.avoidtheblocks.view;
 
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Random;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -19,6 +22,11 @@ public class AvoidTheBlocksView extends View {
 
 	private static final String LOGGING_TAG = AvoidTheBlocksView.class.getName();
 
+	// TODO: Move to dimens.xml
+	private static final float CIRCLE_RADIUS = 20;
+	private static final int PLAYER_SIZE = 5;
+	
+	// TODO: Variate with manometer readings
 	private long animationRefreshIntervalMS = 10;
 
 	private Collection<Point> blocks = new LinkedList<Point>();
@@ -35,6 +43,8 @@ public class AvoidTheBlocksView extends View {
 			invalidate();
 		}
 	};
+
+	private Runnable collisionHandler = new CollissionHandler();
 
 	private Paint yellowPaint;
 	private Paint greenPaint;
@@ -87,13 +97,13 @@ public class AvoidTheBlocksView extends View {
 	private void drawBlocks(final Canvas canvas) {
 		synchronized (blocks) {
 			for (Point block : blocks) {
-				canvas.drawCircle(block.x, block.y, 20, yellowPaint);
+				canvas.drawCircle(block.x, block.y, CIRCLE_RADIUS, yellowPaint);
 			}
 		}
 	}
 
 	private void drawPlayer(Canvas canvas) {
-		canvas.drawRect(playerPosition.x - 5, playerPosition.y - 5, playerPosition.x + 5, playerPosition.y + 5,
+		canvas.drawRect(playerPosition.x - PLAYER_SIZE, playerPosition.y - PLAYER_SIZE, playerPosition.x + PLAYER_SIZE, playerPosition.y + PLAYER_SIZE,
 				greenPaint);
 	}
 
@@ -128,6 +138,7 @@ public class AvoidTheBlocksView extends View {
 				synchronized (blocks) {
 					moveBlocksDown();
 					removeOffScreenBlocks();
+					checkForCollisions();
 				}
 
 				handler.post(invalidator);
@@ -203,5 +214,56 @@ Math.min(playerPosition.y + playerVelocity * (animationRefreshIntervalMS / 1000.
 
 	public void acceleratePlayer(int acceleration) {
 		playerAcceleration = acceleration;
+	}
+
+	private void checkForCollisions() {
+		Point topLeft = new Point(playerPosition.x - PLAYER_SIZE, playerPosition.y - PLAYER_SIZE);
+		Point topRight = new Point(playerPosition.x + PLAYER_SIZE, playerPosition.y - PLAYER_SIZE);
+		Point bottomRight = new Point(playerPosition.x + PLAYER_SIZE, playerPosition.y + PLAYER_SIZE);
+		Point bottomLeft = new Point(playerPosition.x - PLAYER_SIZE, playerPosition.y + PLAYER_SIZE);
+
+		boolean collision = false;
+
+		for (Point block : blocks) {
+			if (isCollision(topLeft, block) || isCollision(topRight, block) || isCollision(bottomLeft, block) || isCollision(bottomRight, block)) {
+				collision = true;
+				break;
+			}
+		}
+
+		if (collision) {
+			handler.post(collisionHandler);
+		}
+	}
+
+	private boolean isCollision(Point playerCorner, Point circleCenter) {
+		return Math.pow(playerCorner.x - circleCenter.x, 2) + Math.pow(playerCorner.y - circleCenter.y, 2) <= Math.pow(CIRCLE_RADIUS, 2);
+	}
+
+	private class CollissionHandler implements Runnable {
+		public void run() {
+			stop();
+
+			AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+
+			// TODO: Internationalize
+			// String title = getResources().getString("Avoid the Blocks");
+			alert.setTitle("Avoid the Blocks");
+			alert.setMessage("You Loose! Play Again?");
+
+			alert.setPositiveButton(getResources().getString(android.R.string.yes), new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton) {
+					blocks.clear();
+					start();
+				}
+			});
+
+			alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton) {
+				}
+			});
+
+			alert.show();
+		}
 	}
 }
