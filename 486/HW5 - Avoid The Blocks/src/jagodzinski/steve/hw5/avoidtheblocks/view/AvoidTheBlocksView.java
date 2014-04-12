@@ -14,6 +14,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -23,9 +24,12 @@ public class AvoidTheBlocksView extends View {
 	private static final String LOGGING_TAG = AvoidTheBlocksView.class.getName();
 
 	// TODO: Move to dimens.xml
-	private static final float CIRCLE_RADIUS = 20;
-	private static final int PLAYER_SIZE = 5;
+	private static final float CIRCLE_RADIUS = 50;
+	private static final int PLAYER_SIZE = 30;
+	private static final int OFFSET_FROM_BOTTOM = 20;
 	
+	private static final long[] COLLISION_VIBRAION_PATTERN = new long[] { 0, 250, 200, 250, 150, 150, 75, 150, 75, 150 };
+
 	// TODO: Variate with manometer readings
 	private long animationRefreshIntervalMS = 10;
 
@@ -51,6 +55,8 @@ public class AvoidTheBlocksView extends View {
 
 	private Thread animationThread;
 	private Thread blockCreationThread;
+
+	private Vibrator vibrator;
 
 	public AvoidTheBlocksView(Context context, AttributeSet attrs, int defStyleAttr) {
 		super(context, attrs, defStyleAttr);
@@ -92,7 +98,9 @@ public class AvoidTheBlocksView extends View {
 		greenPaint.setColor(Color.GREEN);
 
 		// TODO: move to dimens
-		playerPosition = new Point(getWidth() / 2, getHeight() - 20);
+		playerPosition = new Point(getWidth() / 2, getHeight() - PLAYER_SIZE - OFFSET_FROM_BOTTOM);
+
+		vibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
 	}
 
 	private void drawBlocks(final Canvas canvas) {
@@ -154,10 +162,10 @@ public class AvoidTheBlocksView extends View {
 		private void movePlayer() {
 			if (playerPosition != null) {
 				playerVelocity += playerAcceleration * (animationRefreshIntervalMS / 1000.0);
-				playerPosition.x = (int) Math.max(Math.min(playerPosition.x + playerVelocity * (animationRefreshIntervalMS / 1000.0),
-								getWidth()), 0);
+				playerPosition.x = (int) Math.max(
+						Math.min(playerPosition.x + playerVelocity * (animationRefreshIntervalMS / 1000.0), getWidth() - PLAYER_SIZE), PLAYER_SIZE);
 
-				if ((playerPosition.x == 0 && playerAcceleration <= 0) || (playerPosition.x == getWidth() && playerAcceleration >= 0)) {
+				if ((playerPosition.x == PLAYER_SIZE && playerAcceleration <= 0) || (playerPosition.x == getWidth() - PLAYER_SIZE && playerAcceleration >= 0)) {
 					playerVelocity = 0;
 				}
 
@@ -234,6 +242,7 @@ public class AvoidTheBlocksView extends View {
 			}
 
 			if (collision) {
+				vibrator.vibrate(COLLISION_VIBRAION_PATTERN, -1);
 				handler.post(collisionHandler);
 			}
 		}
