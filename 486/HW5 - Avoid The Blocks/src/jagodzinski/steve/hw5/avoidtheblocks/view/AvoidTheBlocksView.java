@@ -225,6 +225,10 @@ public class AvoidTheBlocksView extends View {
 		playerAcceleration = acceleration;
 	}
 
+	public void setCompass(int compass) {
+
+	}
+
 	private void checkForCollisions() {
 		if (playerPosition != null) {
 			Point topLeft = new Point(playerPosition.x - PLAYER_SIZE, playerPosition.y - PLAYER_SIZE);
