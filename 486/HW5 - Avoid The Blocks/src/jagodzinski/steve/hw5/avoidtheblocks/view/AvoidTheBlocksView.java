@@ -354,9 +354,9 @@ public class AvoidTheBlocksView extends View {
 
 		Difficulty difficulty;
 		
-		if (accuracy <= 120) {
+		if (accuracy <= 60) {
 			difficulty = Difficulty.EASY;
-		} else if (accuracy <= 240) {
+		} else if (accuracy <= 120) {
 			difficulty = Difficulty.MEDIUM;
 		} else {
 			difficulty = Difficulty.HARD;
