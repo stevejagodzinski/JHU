@@ -31,8 +31,8 @@ public class AvoidTheBlocksView extends View {
 	private static final long BRICK_FALL_RATE_MS_HARD = BRICK_FALL_RATE_MS_MEDIUM / 2;
 
 	private static final long BRICK_CREATION_RATE_MS_EASY = 2000;
-	private static final long BRICK_CREATION_RATE_MS_MEDIUM = BRICK_FALL_RATE_MS_EASY / 2;
-	private static final long BRICK_CREATION_RATE_MS_HARD = BRICK_FALL_RATE_MS_MEDIUM / 2;
+	private static final long BRICK_CREATION_RATE_MS_MEDIUM = BRICK_CREATION_RATE_MS_EASY / 2;
+	private static final long BRICK_CREATION_RATE_MS_HARD = BRICK_CREATION_RATE_MS_MEDIUM / 2;
 
 	// TODO: Move to dimens.xml
 	private static final float BLOCK_CIRCLE_RADIUS = 50;
