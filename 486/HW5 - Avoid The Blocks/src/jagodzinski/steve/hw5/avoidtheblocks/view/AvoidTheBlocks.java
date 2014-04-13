@@ -54,7 +54,7 @@ public class AvoidTheBlocks extends Activity {
 	protected void onResume() {
 		super.onResume();
 
-		sensorManager.registerListener(accelerometerListener, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+		sensorManager.registerListener(accelerometerListener, accelerometer, SensorManager.SENSOR_DELAY_GAME);
 
 		// TODO:
 		// sensorManager.registerListener(magListener, magnetometer,
