@@ -261,7 +261,7 @@ public class AvoidTheBlocksView extends View {
 			// TODO: Internationalize
 			// String title = getResources().getString("Avoid the Blocks");
 			alert.setTitle("Avoid the Blocks");
-			alert.setMessage("You Loose! Play Again?");
+			alert.setMessage("You Lose! Play Again?");
 
 			alert.setPositiveButton(getResources().getString(android.R.string.yes), new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int whichButton) {
