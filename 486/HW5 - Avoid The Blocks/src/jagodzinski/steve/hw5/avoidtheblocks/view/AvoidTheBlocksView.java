@@ -1,21 +1,23 @@
 package jagodzinski.steve.hw5.avoidtheblocks.view;
 
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Random;
+import jagodzinski.steve.hw5.avoidtheblocks.model.GameState;
+import jagodzinski.steve.hw5.avoidtheblocks.model.ICollisionObserver;
+import jagodzinski.steve.hw5.avoidtheblocks.model.controller.BlockAnimationThread;
+import jagodzinski.steve.hw5.avoidtheblocks.model.controller.BlockCreationThread;
+import jagodzinski.steve.hw5.avoidtheblocks.model.controller.DifficultyChanger;
+import jagodzinski.steve.hw5.avoidtheblocks.service.DifficultyCalculationUtil;
 
-import android.app.AlertDialog;
+import java.util.Collection;
+import java.util.concurrent.CopyOnWriteArraySet;
+
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Point;
 import android.os.Handler;
-import android.os.Vibrator;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -24,44 +26,21 @@ public class AvoidTheBlocksView extends View {
 
 	private static final String LOGGING_TAG = AvoidTheBlocksView.class.getName();
 
-	private static final long CHANGE_DIFFICULTY_FREQUENCY_MS = 3000;
-	
-	private static final long BRICK_FALL_RATE_MS_EASY = 10;
-	private static final long BRICK_FALL_RATE_MS_MEDIUM = BRICK_FALL_RATE_MS_EASY / 2;
-	private static final long BRICK_FALL_RATE_MS_HARD = BRICK_FALL_RATE_MS_MEDIUM / 2;
-
-	private static final long BRICK_CREATION_RATE_MS_EASY = 2000;
-	private static final long BRICK_CREATION_RATE_MS_MEDIUM = BRICK_CREATION_RATE_MS_EASY / 2;
-	private static final long BRICK_CREATION_RATE_MS_HARD = BRICK_CREATION_RATE_MS_MEDIUM / 2;
-
 	// TODO: Move to dimens.xml
-	private static final float BLOCK_CIRCLE_RADIUS = 50;
-	private static final int PLAYER_SIZE = 30;
+	public static final int PLAYER_SIZE = 30;
+	public static final float BLOCK_CIRCLE_RADIUS = 50;
+
 	private static final int OFFSET_FROM_BOTTOM = 20;
 	private static final int DIFFICULTY_CIRCLE_RADIUS = 100;
 	private static final int DIFFICULTY_CIRCLE_WEIGHT = 5;
 	private static final int DIFFICULFT_CIRCLE_MARGIN = 50;
 	private static final int DIFFICULTY_CIRCLE_LOCATION_INDICATOR_RADIUSES = 20;
 	
-	private static final long[] COLLISION_VIBRAION_PATTERN = new long[] { 0, 250, 200, 250, 150, 150, 75, 150, 75, 150 };
-
-	private Difficulty difficulty;
-
-	private long animationRefreshIntervalMS = BRICK_FALL_RATE_MS_EASY;
-	public long brickCreationRate = BRICK_CREATION_RATE_MS_EASY;
-
-	private Collection<Point> blocks = new LinkedList<Point>();
-
-	private Point playerPosition;
-	private float playerVelocity;
-	private float playerAcceleration;
-	
-	private int easyLocation;
-	private int currentLocation;
+	private GameState gameState;
 
 	private Handler handler = new Handler();
 	
-	private Random random = new Random();
+	private Collection<ICollisionObserver> collisionObservers = new CopyOnWriteArraySet<ICollisionObserver>();
 
 	private Runnable invalidator = new Runnable() {
 		@Override
@@ -70,18 +49,14 @@ public class AvoidTheBlocksView extends View {
 		}
 	};
 
-	private Runnable collisionHandler = new CollissionHandler();
-
 	private Paint yellowPaint;
 	private Paint greenPaint;
 	private Paint whitePaint;
 	private Paint redPaint;
 
-	private Thread blockAnimationThread;
-	private Thread blockCreationThread;
+	private BlockAnimationThread blockAnimationThread;
+	private BlockCreationThread blockCreationThread;
 	private Thread difficultyChangerThread;
-
-	private Vibrator vibrator;
 
 	public AvoidTheBlocksView(Context context, AttributeSet attrs, int defStyleAttr) {
 		super(context, attrs, defStyleAttr);
@@ -97,6 +72,22 @@ public class AvoidTheBlocksView extends View {
 
 	private boolean isInitialized() {
 		return yellowPaint != null;
+	}
+
+	@Override
+	protected void onSizeChanged(int newWidth, int newHeight, int oldWidth, int oldHeight) {
+		super.onSizeChanged(newWidth, newHeight, oldWidth, oldHeight);
+
+		if (blockCreationThread != null) {
+			blockCreationThread.setViewWidth(newWidth);
+		}
+
+		if (blockAnimationThread != null) {
+			blockAnimationThread.setViewHeight(newHeight);
+			blockAnimationThread.setViewWidth(newWidth);
+		}
+
+		gameState.setPlayerPosition(new Point(newWidth / 2, newHeight - PLAYER_SIZE - OFFSET_FROM_BOTTOM));
 	}
 
 	@Override
@@ -119,7 +110,7 @@ public class AvoidTheBlocksView extends View {
 	}
 
 	private void drawEasyLocationOnDifficultyCircle(Canvas canvas) {
-		Point easynessIndicatorLocation = calculatePointOnDifficultCircle(easyLocation);
+		Point easynessIndicatorLocation = calculatePointOnDifficultCircle(gameState.getEasyLocation());
 		
 		Log.d(LOGGING_TAG, "Drawing easy indicator: (" + easynessIndicatorLocation.x + ", " + easynessIndicatorLocation.y + ")");
 		
@@ -127,7 +118,7 @@ public class AvoidTheBlocksView extends View {
 	}
 
 	private void drawCurrentLocationOnDifficultyCircle(Canvas canvas) {
-		Point indicatorLocation = calculatePointOnDifficultCircle(currentLocation);
+		Point indicatorLocation = calculatePointOnDifficultCircle(gameState.getCurrentLocation());
 
 		Log.i(LOGGING_TAG, "Drawing current difficulty location indicator: (" + indicatorLocation.x + ", " + indicatorLocation.y + ")");
 
@@ -138,7 +129,7 @@ public class AvoidTheBlocksView extends View {
 	private Paint getColoredPaintForCurrentDifficultyLocation() {
 		Paint paint;
 
-		switch (difficulty) {
+		switch (gameState.getDifficulty()) {
 			case EASY:
 				paint = greenPaint;
 				break;
@@ -149,7 +140,8 @@ public class AvoidTheBlocksView extends View {
 				paint = redPaint;
 				break;
 			default:
-				throw new UnsupportedOperationException("Unable to calculate color for difficulty indicator. Unspported difficulty: " + difficulty);
+				throw new UnsupportedOperationException("Unable to calculate color for difficulty indicator. Unspported difficulty: "
+						+ gameState.getDifficulty());
 		}
 
 		return paint;
@@ -184,36 +176,36 @@ public class AvoidTheBlocksView extends View {
 
 		redPaint = new Paint();
 		redPaint.setColor(Color.RED);
-
-		// TODO: move to dimens
-		playerPosition = new Point(getWidth() / 2, getHeight() - PLAYER_SIZE - OFFSET_FROM_BOTTOM);
-
-		vibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
 	}
 
 	private void drawBlocks(final Canvas canvas) {
-		synchronized (blocks) {
-			for (Point block : blocks) {
+		synchronized (gameState.getBlocks()) {
+			for (Point block : gameState.getBlocks()) {
 				canvas.drawCircle(block.x, block.y, BLOCK_CIRCLE_RADIUS, yellowPaint);
 			}
 		}
 	}
 
 	private void drawPlayer(Canvas canvas) {
-		canvas.drawRect(playerPosition.x - PLAYER_SIZE, playerPosition.y - PLAYER_SIZE, playerPosition.x + PLAYER_SIZE, playerPosition.y + PLAYER_SIZE,
-				greenPaint);
+		canvas.drawRect(gameState.getPlayerPosition().x - PLAYER_SIZE, gameState.getPlayerPosition().y - PLAYER_SIZE, gameState.getPlayerPosition().x
+				+ PLAYER_SIZE, gameState.getPlayerPosition().y + PLAYER_SIZE, greenPaint);
 	}
 
 	public void start() {
 		stop();
 
-		blockAnimationThread = new BlockAnimationThread();
+		blockAnimationThread = new BlockAnimationThread(gameState, handler, invalidator, getWidth(), getHeight());
+
+		for (ICollisionObserver collisionObserver : collisionObservers) {
+			blockAnimationThread.addCollisionObserver(collisionObserver);
+		}
+
 		blockAnimationThread.start();
 
-		blockCreationThread = new AvoidTheBlocksCreationThread();
+		blockCreationThread = new BlockCreationThread(gameState, getWidth());
 		blockCreationThread.start();
 		
-		difficultyChangerThread = new DifficultyChanger();
+		difficultyChangerThread = new DifficultyChanger(gameState);
 		difficultyChangerThread.start();
 	}
 
@@ -234,215 +226,29 @@ public class AvoidTheBlocksView extends View {
 		}
 	}
 
-	private class BlockAnimationThread extends Thread {
-		@Override
-		public void run() {
-			while (!isInterrupted()) {
-				movePlayer();
-
-				synchronized (blocks) {
-					moveBlocksDown();
-					removeOffScreenBlocks();
-					checkForCollisions();
-				}
-
-				handler.post(invalidator);
-				try {
-					sleep(animationRefreshIntervalMS);
-				} catch (InterruptedException e) {
-					interrupt();
-				}
-			}
-		}
-
-		private void movePlayer() {
-			if (playerPosition != null) {
-				playerVelocity += playerAcceleration * (animationRefreshIntervalMS / 1000.0);
-				playerPosition.x = (int) Math.max(
-						Math.min(playerPosition.x + playerVelocity * (animationRefreshIntervalMS / 1000.0), getWidth() - PLAYER_SIZE), PLAYER_SIZE);
-
-				if ((playerPosition.x == PLAYER_SIZE && playerAcceleration <= 0) || (playerPosition.x == getWidth() - PLAYER_SIZE && playerAcceleration >= 0)) {
-					playerVelocity = 0;
-				}
-
-				Log.d(LOGGING_TAG, "Player moved.");
-				Log.d(LOGGING_TAG, "Player acceleration: " + playerAcceleration);
-				Log.d(LOGGING_TAG, "Player velocity: " + playerVelocity);
-				Log.d(LOGGING_TAG, "Player position: (" + playerPosition.x + ", " + playerPosition.y + ")");
-			}
-		}
-
-		private void moveBlocksDown() {
-			for (Point point : blocks) {
-				point.y++;
-			}
-
-		}
-
-		private void removeOffScreenBlocks() {
-			Iterator<Point> blockIterator = blocks.iterator();
-
-			while (blockIterator.hasNext()) {
-				if (blockIterator.next().y > getHeight()) {
-					blockIterator.remove();
-					Log.i(LOGGING_TAG, "Block removed from screen");
-				}
-			}
-		}
-	}
-
-	private class AvoidTheBlocksCreationThread extends Thread {
-		@Override
-		public void run() {
-			while (!isInterrupted()) {
-				if (getHeight() > 0) {
-					addNewBlock();
-				}
-				try {
-					sleep(brickCreationRate);
-				} catch (InterruptedException e) {
-					interrupt();
-				}
-			}
-		}
-
-		private void addNewBlock() {
-			synchronized (blocks) {
-				blocks.add(createNewBlock());
-			}
-		}
-
-		private Point createNewBlock() {
-			return new Point(random.nextInt(getWidth()), 0);
-		}
-	}
-
-	public void acceleratePlayer(int acceleration) {
-		playerAcceleration = acceleration;
-	}
-
-	public void setCompass(int compass) {
-		currentLocation = compass;
+	public void setCompass(short compass) {
+		gameState.setCurrentLocation(compass);
 		updateDifficulty(compass);
 	}
 	
-	private void updateDifficulty(int currentCompass) {
-		difficulty = calculateDifficulty(currentCompass);
+	private void updateDifficulty(short currentCompass) {
+		gameState.setDifficulty(DifficultyCalculationUtil.calculateDifficulty(currentCompass, gameState.getEasyLocation()));
+		blockCreationThread.updateBlockCreationRate();
+	}
 
-		switch (difficulty) {
-			case EASY:
-				animationRefreshIntervalMS = BRICK_FALL_RATE_MS_EASY;
-				brickCreationRate = BRICK_CREATION_RATE_MS_EASY;
-				break;
-			case MEDIUM:
-				animationRefreshIntervalMS = BRICK_FALL_RATE_MS_MEDIUM;
-				brickCreationRate = BRICK_CREATION_RATE_MS_MEDIUM;
-				break;
-			case HARD:
-				animationRefreshIntervalMS = BRICK_FALL_RATE_MS_HARD;
-				brickCreationRate = BRICK_CREATION_RATE_MS_HARD;
-				break;
-			default:
-				Log.e(LOGGING_TAG, "Error updating difficulty. Unspported difficulty: " + difficulty);
+	public GameState getGameState() {
+		return gameState;
+	}
+
+	public void setGameState(GameState gameState) {
+		this.gameState = gameState;
+	}
+
+	public void addCollisionObserver(ICollisionObserver observer) {
+		collisionObservers.add(observer);
+
+		if (blockAnimationThread != null) {
+			blockAnimationThread.addCollisionObserver(observer);
 		}
-	}
-
-	private Difficulty calculateDifficulty(int currentCompass) {
-		int accuracyBetweenPoints = Math.abs(easyLocation - currentCompass);
-		int accuractAroundNorth = currentCompass + (360 - easyLocation);
-		int accuracy = Math.min(accuracyBetweenPoints, accuractAroundNorth);
-
-		Difficulty difficulty;
-		
-		if (accuracy <= 60) {
-			difficulty = Difficulty.EASY;
-		} else if (accuracy <= 120) {
-			difficulty = Difficulty.MEDIUM;
-		} else {
-			difficulty = Difficulty.HARD;
-		}
-
-		Log.d(LOGGING_TAG, "Calculating difficulty");
-		Log.d(LOGGING_TAG, "Current Compass: " + currentCompass);
-		Log.d(LOGGING_TAG, "Easy Location: " + easyLocation);
-		Log.d(LOGGING_TAG, "Difficulty: " + difficulty);
-
-		return difficulty;
-	}
-
-	private void checkForCollisions() {
-		if (playerPosition != null) {
-			Point topLeft = new Point(playerPosition.x - PLAYER_SIZE, playerPosition.y - PLAYER_SIZE);
-			Point topRight = new Point(playerPosition.x + PLAYER_SIZE, playerPosition.y - PLAYER_SIZE);
-			Point bottomRight = new Point(playerPosition.x + PLAYER_SIZE, playerPosition.y + PLAYER_SIZE);
-			Point bottomLeft = new Point(playerPosition.x - PLAYER_SIZE, playerPosition.y + PLAYER_SIZE);
-
-			boolean collision = false;
-
-			for (Point block : blocks) {
-				if (isCollision(topLeft, block) || isCollision(topRight, block) || isCollision(bottomLeft, block) || isCollision(bottomRight, block)) {
-					collision = true;
-					break;
-				}
-			}
-
-			if (collision) {
-				vibrator.vibrate(COLLISION_VIBRAION_PATTERN, -1);
-				handler.post(collisionHandler);
-			}
-		}
-	}
-
-	private boolean isCollision(Point playerCorner, Point circleCenter) {
-		return Math.pow(playerCorner.x - circleCenter.x, 2) + Math.pow(playerCorner.y - circleCenter.y, 2) <= Math.pow(BLOCK_CIRCLE_RADIUS, 2);
-	}
-
-	private class CollissionHandler implements Runnable {
-		@Override
-		public void run() {
-			stop();
-
-			AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
-
-			// TODO: Internationalize
-			// String title = getResources().getString("Avoid the Blocks");
-			alert.setTitle("Avoid the Blocks");
-			alert.setMessage("You Lose! Play Again?");
-
-			alert.setPositiveButton(getResources().getString(android.R.string.yes), new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int whichButton) {
-					blocks.clear();
-					start();
-				}
-			});
-
-			alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int whichButton) {
-					setKeepScreenOn(false);
-				}
-			});
-
-			alert.show();
-		}
-	}
-	
-	private class DifficultyChanger extends Thread {
-		@Override
-		public void run() {
-			while (!isInterrupted()) {
-				
-				easyLocation = random.nextInt(360);
-				
-				try {
-					sleep(CHANGE_DIFFICULTY_FREQUENCY_MS);
-				} catch (InterruptedException e) {
-					interrupt();
-				}
-			}
-		}
-	}
-
-	private static enum Difficulty {
-		EASY, MEDIUM, HARD;
 	}
 }
