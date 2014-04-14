@@ -1,14 +1,15 @@
 package jagodzinski.steve.hw5.avoidtheblocks.model.controller;
 
+import jagodzinki.steve.hw5.avoidtheblocks.R;
 import jagodzinski.steve.hw5.avoidtheblocks.model.GameState;
 import jagodzinski.steve.hw5.avoidtheblocks.model.ICollisionObserver;
-import jagodzinski.steve.hw5.avoidtheblocks.view.AvoidTheBlocksView;
 
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import android.content.Context;
 import android.graphics.Point;
 import android.os.Handler;
 import android.util.Log;
@@ -31,15 +32,21 @@ public class BlockAnimationThread extends Thread {
 	private Handler uiThreadHandler;
 	private Runnable invalidateUIRunnable;
 
+	private int playerSizeFromCenter;
+	private float blockCircleRadius;
+
 	private Collection<ICollisionObserver> collisionObservers = new CopyOnWriteArraySet<ICollisionObserver>();
 
 	public BlockAnimationThread(final GameState gameState, final Handler uiThreadHandler, final Runnable invalidateUIRunnable, final int viewWidth,
-			final int viewHeight) {
+			final int viewHeight, final Context context) {
 		this.gameState = gameState;
 		this.uiThreadHandler = uiThreadHandler;
 		this.invalidateUIRunnable = invalidateUIRunnable;
 		this.viewWidth = viewWidth;
 		this.viewHeight = viewHeight;
+
+		playerSizeFromCenter = (int) context.getResources().getDimension(R.dimen.player_size_from_center);
+		blockCircleRadius = context.getResources().getDimension(R.dimen.block_circle_radius);
 	}
 
 	@Override
@@ -154,15 +161,6 @@ public class BlockAnimationThread extends Thread {
 		}
 	}
 
-	private int getPlayerSizeFromCenter() {
-		// TODO: Replace with dimens.xml
-		return AvoidTheBlocksView.PLAYER_SIZE;
-	}
-
-	private float getBlockCircleRadius() {
-		return AvoidTheBlocksView.BLOCK_CIRCLE_RADIUS;
-	}
-
 	private void invalidateUI() {
 		uiThreadHandler.post(invalidateUIRunnable);
 	}
@@ -173,5 +171,13 @@ public class BlockAnimationThread extends Thread {
 
 	public void setViewHeight(float viewHeight) {
 		this.viewHeight = viewHeight;
+	}
+
+	private int getPlayerSizeFromCenter() {
+		return playerSizeFromCenter;
+	}
+
+	private double getBlockCircleRadius() {
+		return blockCircleRadius;
 	}
 }

@@ -1,6 +1,7 @@
 package jagodzinski.steve.hw5.avoidtheblocks.view;
 
 
+import jagodzinki.steve.hw5.avoidtheblocks.R;
 import jagodzinski.steve.hw5.avoidtheblocks.model.GameState;
 import jagodzinski.steve.hw5.avoidtheblocks.model.ICollisionObserver;
 import jagodzinski.steve.hw5.avoidtheblocks.model.controller.BlockAnimationThread;
@@ -26,15 +27,12 @@ public class AvoidTheBlocksView extends View {
 
 	private static final String LOGGING_TAG = AvoidTheBlocksView.class.getName();
 
-	// TODO: Move to dimens.xml
-	public static final int PLAYER_SIZE = 30;
-	public static final float BLOCK_CIRCLE_RADIUS = 50;
-
-	private static final int OFFSET_FROM_BOTTOM = 20;
-	private static final int DIFFICULTY_CIRCLE_RADIUS = 100;
-	private static final int DIFFICULTY_CIRCLE_WEIGHT = 5;
-	private static final int DIFFICULFT_CIRCLE_MARGIN = 50;
-	private static final int DIFFICULTY_CIRCLE_LOCATION_INDICATOR_RADIUSES = 20;
+	public int playerSize;
+	public float blockCircleRadius;
+	private int difficultyCircleRadius;
+	private int difficultyCircleWeight;
+	private int dificultyCircleMargin;
+	private int difficultyCircleLocationIndicatorRadisuses;
 	
 	private GameState gameState;
 
@@ -70,6 +68,15 @@ public class AvoidTheBlocksView extends View {
 		super(context);
 	}
 
+	private void initializeDimensions() {
+		playerSize = (int) getContext().getResources().getDimension(R.dimen.player_size_from_center);
+		blockCircleRadius = getContext().getResources().getDimension(R.dimen.block_circle_radius);
+		difficultyCircleRadius = (int) getContext().getResources().getDimension(R.dimen.difficulty_circle_radius);
+		difficultyCircleWeight = (int) getContext().getResources().getDimension(R.dimen.difficulty_circle_weight);
+		dificultyCircleMargin = (int) getContext().getResources().getDimension(R.dimen.difficulty_circle_margin);
+		difficultyCircleLocationIndicatorRadisuses = (int) getContext().getResources().getDimension(R.dimen.difficulty_circle_location_indicator_radiuses);
+	}
+
 	private boolean isInitialized() {
 		return yellowPaint != null;
 	}
@@ -87,7 +94,8 @@ public class AvoidTheBlocksView extends View {
 			blockAnimationThread.setViewWidth(newWidth);
 		}
 
-		gameState.setPlayerPosition(new Point(newWidth / 2, newHeight - PLAYER_SIZE - OFFSET_FROM_BOTTOM));
+		gameState.setPlayerPosition(new Point(newWidth / 2, newHeight - ((int) getContext().getResources().getDimension(R.dimen.player_size_from_center))
+				- ((int) getContext().getResources().getDimension(R.dimen.offset_from_bottom))));
 	}
 
 	@Override
@@ -114,7 +122,7 @@ public class AvoidTheBlocksView extends View {
 		
 		Log.d(LOGGING_TAG, "Drawing easy indicator: (" + easynessIndicatorLocation.x + ", " + easynessIndicatorLocation.y + ")");
 		
-		canvas.drawCircle(easynessIndicatorLocation.x, easynessIndicatorLocation.y, DIFFICULTY_CIRCLE_LOCATION_INDICATOR_RADIUSES, greenPaint);
+		canvas.drawCircle(easynessIndicatorLocation.x, easynessIndicatorLocation.y, difficultyCircleLocationIndicatorRadisuses, greenPaint);
 	}
 
 	private void drawCurrentLocationOnDifficultyCircle(Canvas canvas) {
@@ -122,7 +130,7 @@ public class AvoidTheBlocksView extends View {
 
 		Log.i(LOGGING_TAG, "Drawing current difficulty location indicator: (" + indicatorLocation.x + ", " + indicatorLocation.y + ")");
 
-		canvas.drawCircle(indicatorLocation.x, indicatorLocation.y, DIFFICULTY_CIRCLE_LOCATION_INDICATOR_RADIUSES,
+		canvas.drawCircle(indicatorLocation.x, indicatorLocation.y, difficultyCircleLocationIndicatorRadisuses,
 				getColoredPaintForCurrentDifficultyLocation());
 	}
 
@@ -148,18 +156,18 @@ public class AvoidTheBlocksView extends View {
 	}
 
 	private Point calculatePointOnDifficultCircle(int angle) {
-		int x = (int) ((getWidth() - DIFFICULFT_CIRCLE_MARGIN - DIFFICULTY_CIRCLE_RADIUS) + (DIFFICULTY_CIRCLE_RADIUS * Math.cos(Math.toRadians(angle))));
-		int y = (int) ((DIFFICULFT_CIRCLE_MARGIN + DIFFICULTY_CIRCLE_RADIUS) + (DIFFICULTY_CIRCLE_RADIUS * Math.sin(Math.toRadians(angle))));
+		int x = (int) ((getWidth() - dificultyCircleMargin - difficultyCircleRadius) + (difficultyCircleRadius * Math.cos(Math.toRadians(angle))));
+		int y = (int) ((dificultyCircleMargin + difficultyCircleRadius) + (difficultyCircleRadius * Math.sin(Math.toRadians(angle))));
 		return new Point(x, y);
 	}
 
 	private void drawDifficultyCircle(Canvas canvas) {
-		int centerX = getWidth() - DIFFICULFT_CIRCLE_MARGIN - DIFFICULTY_CIRCLE_RADIUS;
-		int centerY = DIFFICULFT_CIRCLE_MARGIN + DIFFICULTY_CIRCLE_RADIUS;
+		int centerX = getWidth() - dificultyCircleMargin - difficultyCircleRadius;
+		int centerY = dificultyCircleMargin + difficultyCircleRadius;
 
-		Log.d(LOGGING_TAG, "Drawing difficulty circle at (" + centerX + ", " + centerY + "). Radius: " + DIFFICULTY_CIRCLE_RADIUS);
+		Log.d(LOGGING_TAG, "Drawing difficulty circle at (" + centerX + ", " + centerY + "). Radius: " + difficultyCircleRadius);
 
-		canvas.drawCircle(centerX, centerY, DIFFICULTY_CIRCLE_RADIUS, whitePaint);
+		canvas.drawCircle(centerX, centerY, difficultyCircleRadius, whitePaint);
 	}
 
 	private void init() {
@@ -172,29 +180,31 @@ public class AvoidTheBlocksView extends View {
 		whitePaint = new Paint();
 		whitePaint.setColor(Color.WHITE);
 		whitePaint.setStyle(Style.STROKE);
-		whitePaint.setStrokeWidth(DIFFICULTY_CIRCLE_WEIGHT);
+		whitePaint.setStrokeWidth(difficultyCircleWeight);
 
 		redPaint = new Paint();
 		redPaint.setColor(Color.RED);
+
+		initializeDimensions();
 	}
 
 	private void drawBlocks(final Canvas canvas) {
 		synchronized (gameState.getBlocks()) {
 			for (Point block : gameState.getBlocks()) {
-				canvas.drawCircle(block.x, block.y, BLOCK_CIRCLE_RADIUS, yellowPaint);
+				canvas.drawCircle(block.x, block.y, blockCircleRadius, yellowPaint);
 			}
 		}
 	}
 
 	private void drawPlayer(Canvas canvas) {
-		canvas.drawRect(gameState.getPlayerPosition().x - PLAYER_SIZE, gameState.getPlayerPosition().y - PLAYER_SIZE, gameState.getPlayerPosition().x
-				+ PLAYER_SIZE, gameState.getPlayerPosition().y + PLAYER_SIZE, greenPaint);
+		canvas.drawRect(gameState.getPlayerPosition().x - playerSize, gameState.getPlayerPosition().y - playerSize, gameState.getPlayerPosition().x
+				+ playerSize, gameState.getPlayerPosition().y + playerSize, greenPaint);
 	}
 
 	public void start() {
 		stop();
 
-		blockAnimationThread = new BlockAnimationThread(gameState, handler, invalidator, getWidth(), getHeight());
+		blockAnimationThread = new BlockAnimationThread(gameState, handler, invalidator, getWidth(), getHeight(), getContext());
 
 		for (ICollisionObserver collisionObserver : collisionObservers) {
 			blockAnimationThread.addCollisionObserver(collisionObserver);
