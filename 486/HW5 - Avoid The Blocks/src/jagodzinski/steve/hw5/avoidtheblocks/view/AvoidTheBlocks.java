@@ -167,10 +167,8 @@ public class AvoidTheBlocks extends Activity implements ICollisionObserver {
 		if (!dialogVisible) {
 			AlertDialog.Builder alert = new AlertDialog.Builder(AvoidTheBlocks.this);
 
-			// TODO: Internationalize
-			// String title = getResources().getString("Avoid the Blocks");
-			alert.setTitle("Avoid the Blocks");
-			alert.setMessage("You Lose! Play Again?");
+			alert.setTitle(getResources().getString(R.string.avoid_the_blocks));
+			alert.setMessage(getResources().getString(R.string.you_lose_play_again));
 
 			alert.setPositiveButton(getResources().getString(android.R.string.yes), new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int whichButton) {

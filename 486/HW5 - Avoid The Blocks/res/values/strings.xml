@@ -4,5 +4,7 @@
     <string name="app_name">jagodzinki.steve.hw5.AvoidTheBlocks</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
+    <string name="avoid_the_blocks">Avoid the Blocks</string>
+    <string name="you_lose_play_again">You Lose! Play Again?</string>
 
 </resources>
