@@ -1,4 +1,4 @@
-package jagodzinski.steve.hw5.avoidtheblocks.model.controller;
+package jagodzinski.steve.hw5.avoidtheblocks.controller;
 
 import jagodzinski.steve.hw5.avoidtheblocks.model.GameState;
 

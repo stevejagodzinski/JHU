@@ -2,11 +2,11 @@ package jagodzinski.steve.hw5.avoidtheblocks.view;
 
 
 import jagodzinki.steve.hw5.avoidtheblocks.R;
+import jagodzinski.steve.hw5.avoidtheblocks.controller.BlockAnimationThread;
+import jagodzinski.steve.hw5.avoidtheblocks.controller.BlockCreationThread;
+import jagodzinski.steve.hw5.avoidtheblocks.controller.DifficultyChanger;
 import jagodzinski.steve.hw5.avoidtheblocks.model.GameState;
 import jagodzinski.steve.hw5.avoidtheblocks.model.ICollisionObserver;
-import jagodzinski.steve.hw5.avoidtheblocks.model.controller.BlockAnimationThread;
-import jagodzinski.steve.hw5.avoidtheblocks.model.controller.BlockCreationThread;
-import jagodzinski.steve.hw5.avoidtheblocks.model.controller.DifficultyChanger;
 import jagodzinski.steve.hw5.avoidtheblocks.service.DifficultyCalculationUtil;
 
 import java.util.Collection;
