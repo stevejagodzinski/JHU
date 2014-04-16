@@ -1,41 +1,67 @@
-body { background-color: #fdf5e6 }
+body { background-color: #fdf5e6; }
 a:hover { color: red }
-
+h2 {
+	color: #440000;
+	text-align: center;
+	font-family: Arial, Helvetica, sans-serif
+}
 th.title   { background-color: #ef8429;
-             font-size: 28px;
+             font-size: 22px;
              font-family: Arial, Helvetica, sans-serif;
 }
 th { background-color: #ef8429;
-     font-size: 18px;
+     font-size: 16px;
      font-family: Arial, Helvetica, sans-serif;
 }
-td { font-size: 18px;
+td { font-size: 16px;
      font-family: Arial, Helvetica, sans-serif;
 }
 legend {
   font-weight: bold;
   color: black;
-  background-color: #eeeeee;
-  border: 1px solid #999999;
-  padding: 3px 2px;
+  background-color: white;
+  border: 1px solid #cccccc;
+  padding: 4px 2px;
 }
-.ajaxResult { color: #440000;
-              font-weight: bold;
-              font-size: 18px;
-              font-family: Arial, Helvetica, sans-serif;
+.autocomplete {
+  position: absolute;
+  color: #333333;
+  background-color: #ffffff;
+  border: 1px solid #666666;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
 }
-h2 { color: #440000;
-	  font-weight: bold;
-	  font-size: 18px;
-	  font-family: Arial, Helvetica, sans-serif;
+.autocomplete ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  overflow: auto;
 }
-.error { background-color: yellow;
-	      color: red;
-	      font-weight: bold;
-	      font-size: 20px;
-	      font-family: Arial, Helvetica, sans-serif;
-	      border-style: inset;
+.autocomplete li {
+  display: block;
+  white-space: nowrap;
+  cursor: pointer;
+  margin: 0px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border: 0px solid #ffffff;
 }
-.inputFormLabel {
-	text-align:right;
+.autocomplete li.selected {
+  background-color: #cceeff;
+  border-top: 1px solid #99bbcc;
+  border-bottom: 1px solid #99bbcc;
+}
+.boring {
+  color: black;
+  background-color: #fdf5e6;
+  border: 0px solid cyan;
+  font-family: serif;
+  font-size: 18px;
+}
+.weird {
+  color: yellow;
+  background-color: red;
+  border: 10px solid cyan;
+  font-family: Arial, sans-serif;
+  font-size: 100px;
 }
