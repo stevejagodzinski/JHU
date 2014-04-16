@@ -6,11 +6,21 @@ function findCustomersById(resultRegion) {
 	
 	new Ajax.Request("GetCustomerByID", {
 		method:'get',
-		onSuccess : function(response) { buildTableFromProtoypeResponse(response, resultRegion); },
+		onSuccess : function(response) { handleCustomerLookupResponse(response, resultRegion); },
 		parameters : {
 			customerId : $F("customerIdInput")
 		}
 	});
+}
+
+function handleCustomerLookupResponse(response, resultRegion) {	
+	buildTableFromProtoypeResponse(response, resultRegion);
+	
+	var highlight = document.URL.toQueryParams()['highlight'] == "true";
+	
+	if(highlight) {
+		new Effect.Highlight(resultRegion);
+	}
 }
 
 function buildTableFromProtoypeResponse(response, resultRegion) {
