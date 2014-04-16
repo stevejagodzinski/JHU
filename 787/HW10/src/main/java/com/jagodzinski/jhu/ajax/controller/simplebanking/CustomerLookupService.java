@@ -116,4 +116,25 @@ public class CustomerLookupService
 
 		return matches;
 	}
+
+	public CustomerAccountSummary findCustomerWithHighestBalance()
+	{
+		CustomerAccountSummary highestBalanceCustomer = null;
+
+		for (CustomerAccountSummary customer : customers.values())
+		{
+			if (hasHigherBalance(highestBalanceCustomer, customer))
+			{
+				highestBalanceCustomer = customer;
+			}
+		}
+
+		return highestBalanceCustomer;
+	}
+
+	private boolean hasHigherBalance(CustomerAccountSummary highestBalanceCustomer, CustomerAccountSummary toCheck)
+	{
+		return highestBalanceCustomer == null
+				|| toCheck.getAccountBalance().compareTo(highestBalanceCustomer.getAccountBalance()) > 0;
+	}
 }
