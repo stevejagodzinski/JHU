@@ -3,10 +3,6 @@ window.onload = function() {
 };
 
 function googleSearch(id) {
-	var language = getValue(id);
+	var language = $F(id);
 	window.location.href = "http://www.google.com/search?q=" + language;
-}
-
-function getValue(id) {
-	return (escape(document.getElementById(id).value));
 }

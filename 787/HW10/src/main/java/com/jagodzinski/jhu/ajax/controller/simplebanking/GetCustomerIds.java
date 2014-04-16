@@ -1,8 +1,6 @@
-package com.jagodzinski.jhu.ajax.controller.cities;
+package com.jagodzinski.jhu.ajax.controller.simplebanking;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -12,13 +10,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/GetCities")
-public class GetCities extends HttpServlet
+@WebServlet("/GetCustomerIds")
+public class GetCustomerIds extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
-
-	private static final List<String> CITIES = Arrays.asList("Albany", "Albuquerque", "Atlanta", "Austin", "Baltimore",
-			"Boston");
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
@@ -31,28 +26,16 @@ public class GetCities extends HttpServlet
 	{
 		setResponseHeaders(response);
 
-		String inputCity = request.getParameter("cityInput");
-		request.setAttribute("items", findMatchingCities(inputCity));
+		String inputCity = request.getParameter("customerIdPrefix");
+		request.setAttribute("items", findMatchingCustomerIds(inputCity));
 		String outputPage = "/WEB-INF/items-list.jsp";
 		RequestDispatcher dispatcher = request.getRequestDispatcher(outputPage);
 		dispatcher.include(request, response);
 	}
 
-	private List<String> findMatchingCities(String inputCity)
+	private List<String> findMatchingCustomerIds(String customerIdPrefix)
 	{
-		List<String> matchingCities = new ArrayList<String>();
-
-		String lowerCaseInputCity = inputCity.toLowerCase();
-
-		for (String city : CITIES)
-		{
-			if (city.toLowerCase().startsWith(lowerCaseInputCity))
-			{
-				matchingCities.add(city);
-			}
-		}
-
-		return matchingCities;
+		return CustomerLookupService.getInstance().getAllCustomerIdsStartingWith(customerIdPrefix);
 	}
 
 	private void setResponseHeaders(final HttpServletResponse response)
