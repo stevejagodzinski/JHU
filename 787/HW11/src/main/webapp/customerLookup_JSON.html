@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>Customer Lookup</title>
+    <link rel="stylesheet"
+          href="./css/sjagodz111_styles.css"
+          type="text/css"/>
+	<script	src="http://code.jquery.com/jquery-2.1.0.js"
+		type="text/javascript"></script>
+	<script src="./scripts/sjagodz111_customer_lookup_json.js"
+		type="text/javascript"></script>
+		
+</head>
+<body>
+<div align="center">
+    <fieldset>
+        <legend>Customer Lookup</legend>
+        <form>
+            <label>Customer Id:<input id="customerIdInput" name="customerIdPrefix" type="text"/></label><br/>
+            <div id="customerIdMenuDivAjax" class="autocomplete"></div>
+            <input type="button" value="Search" />
+            <div id="findCustomerByIdResult"></div>
+        </form>
+    </fieldset>
+</div>
+</body></html>
