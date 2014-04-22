@@ -13,6 +13,8 @@
 		type="text/javascript"></script>
 	<script src="./scripts/scriptaculous/scriptaculous.js?load=effects,controls"
        type="text/javascript"></script>
+    <script src="./scripts/sjagodz110_edit_richest_customer.js"
+	      type="text/javascript"></script>
 </head>
 <body>
 <div align="center">
