@@ -1,6 +1,7 @@
 package com.jagodzinski.jhu.ajax.controller.simplebanking;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -98,10 +99,29 @@ public class CustomerLookupByIdController extends HttpServlet
 	private void writeHTMLResponse(final HttpServletRequest request, final HttpServletResponse response,
 			final CustomerAccountSummary customerAccountSummary) throws ServletException, IOException
 	{
+		request.setAttribute("firstNameClass", getFirstNameStyleClass(customerAccountSummary));
+		request.setAttribute("lastNameClass", getLastNameStyleClass(customerAccountSummary));
+		request.setAttribute("accountBalanceNameClass", getAccountBalanceNameStyleClass(customerAccountSummary));
 		request.setAttribute("customer", customerAccountSummary);
 		String outputPage = "/WEB-INF/customer-lookup-unordered-list-response.jsp";
 		RequestDispatcher dispatcher = request.getRequestDispatcher(outputPage);
 		dispatcher.include(request, response);
+	}
+
+	private String getFirstNameStyleClass(final CustomerAccountSummary customerAccountSummary)
+	{
+		return customerAccountSummary.getFirstName().equals("Unknown") ? "unknown-name" : "known-name";
+	}
+
+	private String getLastNameStyleClass(final CustomerAccountSummary customerAccountSummary)
+	{
+		return customerAccountSummary.getLastName().equals("Unknown") ? "unknown-name" : "known-name";
+	}
+
+	private String getAccountBalanceNameStyleClass(final CustomerAccountSummary customerAccountSummary)
+	{
+		return customerAccountSummary.getAccountBalance().compareTo(BigDecimal.ZERO) == 0 ? "zero-balance"
+				: "non-zero-balance";
 	}
 
 	private CustomerAccountSummary getCustomerAccountSummary(HttpServletRequest request) {
