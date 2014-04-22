@@ -73,7 +73,14 @@ public class CustomerLookupService
     
     public CustomerAccountSummary getCustomerById(final String customerId)
     {
-        return customers.get(customerId);
+		CustomerAccountSummary customer = customers.get(customerId);
+
+		if (customer == null)
+		{
+			customer = CustomerAccountSummary.newUnknownCustomerInstance(customerId);
+		}
+
+		return customer;
     }
 
     public List<String> getCustomerIds()

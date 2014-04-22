@@ -15,6 +15,16 @@ public class CustomerAccountSummary
         return new CustomerAccountSummary();
     }
 
+	public static CustomerAccountSummary newUnknownCustomerInstance(final String customerId)
+	{
+		CustomerAccountSummary unknownCustomer = newInstance();
+		unknownCustomer.setAccountBalance(BigDecimal.ZERO);
+		unknownCustomer.setFirstName("Unknown");
+		unknownCustomer.setLastName("Unknown");
+		unknownCustomer.setCustomerId(customerId);
+		return unknownCustomer;
+	}
+
     private BigDecimal accountBalance;
     private String customerId;
     private String firstName;
