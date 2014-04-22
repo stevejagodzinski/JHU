@@ -1,5 +1,7 @@
 $j(function() {
     $j("#customerIdSearchButton").click(findCustomersById);
+    showHighlightButton();
+    $j("#highlightButton").click(highlightUnknownAndZeroRows);
 });
 
 function findCustomersById() {	
@@ -21,4 +23,16 @@ function createUnorderedList(jsonData) {
 
 function insertHTML(htmlResult) {	
 	$j("#findCustomerByIdResult").html(htmlResult);
+}
+
+function showHighlightButton() {
+	if(document.URL.toQueryParams()['highlight'] == "true") {
+		$j("#highlightButton").show();
+	}
+}
+
+function highlightUnknownAndZeroRows() {
+	$j(".unknown-name, .zero-balance").each(function(index, element){
+		new Effect.Highlight(element.id);
+	})
 }
