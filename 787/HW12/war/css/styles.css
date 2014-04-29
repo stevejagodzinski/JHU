@@ -1,0 +1,27 @@
+/** GWT automatically inserts a <link...> tag at the bottom of
+  * the head section that loads a standard CSS file. This standard
+  * file mostly defines styles for GWT elements (gwt-Button, gwt-HTML, etc.),
+  * but it also defines styles for body, td, select, pre, and a.
+  * Since the standard style sheet is loaded AFTER yours, if you define
+  * styles for body, td, etc., you have to mark the styles with !important.
+  */
+
+body { background-color: #fdf5e6 !important }
+th.title   { background-color: #ef8429;
+             font-size: 28px;
+             font-family: Arial, Helvetica, sans-serif;
+}
+th { background-color: #ef8429;
+     font-size: 18px;
+     font-family: Arial, Helvetica, sans-serif;
+}
+td { font-size: 18px !important;
+     font-family: Arial, Helvetica, sans-serif !important;
+}
+legend {
+  font-weight: bold;
+  color: black;
+  background-color: #eeeeee;
+  border: 1px solid #999999;
+  padding: 3px 2px;
+}
