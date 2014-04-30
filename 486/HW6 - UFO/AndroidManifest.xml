@@ -23,7 +23,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="jagodzinski.steve.hw6.ufo.UFO"
+            android:name="jagodzinski.steve.hw6.ufo.view.UFO"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

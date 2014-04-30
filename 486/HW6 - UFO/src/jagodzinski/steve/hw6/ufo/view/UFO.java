@@ -1,5 +1,8 @@
-package jagodzinski.steve.hw6.ufo;
+package jagodzinski.steve.hw6.ufo.view;
 
+import jagodzinski.steve.hw6.ufo.R;
+import jagodzinski.steve.hw6.ufo.R.layout;
+import jagodzinski.steve.hw6.ufo.R.menu;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
