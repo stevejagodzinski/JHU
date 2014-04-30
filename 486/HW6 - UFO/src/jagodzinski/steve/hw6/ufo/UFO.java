@@ -1,7 +1,7 @@
-package com.example.jagodzinski.steve.hw6.ufo;
+package jagodzinski.steve.hw6.ufo;
 
-import android.os.Bundle;
 import android.app.Activity;
+import android.os.Bundle;
 import android.view.Menu;
 
 public class UFO extends Activity {
