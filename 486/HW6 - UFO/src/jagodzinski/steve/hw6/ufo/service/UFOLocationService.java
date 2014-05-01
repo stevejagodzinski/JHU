@@ -1,7 +1,7 @@
 package jagodzinski.steve.hw6.ufo.service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import android.app.Service;
 import android.content.Intent;
@@ -11,14 +11,14 @@ import android.util.Log;
 
 public class UFOLocationService extends Service {
 
-	private ServiceThread serviceThread;
-	private List<Reporter> reporters = new ArrayList<Reporter>();
+	private Thread serviceThread;
+	private List<Reporter> reporters = new CopyOnWriteArrayList<Reporter>();
 	private IBinder binder = new UFOLocationServiceBinder();
 
 	@Override
 	public IBinder onBind(Intent intent) {
 		Log.d("UFOLocationService", "onBind(" + intent + ")");
-		serviceThread = new ServiceThread();
+		serviceThread = new UFOLocationServiceThread(reporters);
 		serviceThread.start();
 		return binder;
 	}
@@ -33,37 +33,8 @@ public class UFOLocationService extends Service {
 		super.onDestroy();
 	}
 
-	
-	private class ServiceThread extends Thread {
-		private int n = 1;
-
-		@Override
-		public void run() {
-			Log.d("ServiceThread", "Running");
-
-			while (!isInterrupted()) {
-
-				// TODO: Get Alien Positions
-
-				for (Reporter reporter : reporters) {
-					// TODO: Pass loc to reporter
-					reporter.report(n);
-				}
-
-				n++;
-
-				try {
-					sleep(1000);
-				} catch (InterruptedException e) {
-					interrupt();
-				}
-			}
-			Log.d("ServiceThread", "interrupted");
-		}
-	}
-
 	public interface Reporter {
-		void report(int n);
+		void report(String json);
 	}
 
 	public class UFOLocationServiceBinder extends Binder {

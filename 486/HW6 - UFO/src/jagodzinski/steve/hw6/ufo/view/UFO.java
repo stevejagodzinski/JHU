@@ -62,11 +62,11 @@ public class UFO extends Activity {
 
 	private Reporter reporter = new Reporter() {
 		@Override
-		public void report(final int n) {
+		public void report(final String json) {
 			runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
-					Log.d("MainActivity reporter", n + "");
+					Log.d("MainActivity reporter", json);
 				}
 			});
 		}
