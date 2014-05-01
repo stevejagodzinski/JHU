@@ -35,6 +35,8 @@ public class UFOLocationService extends Service {
 
 	
 	private class ServiceThread extends Thread {
+		private int n = 1;
+
 		@Override
 		public void run() {
 			Log.d("ServiceThread", "Running");
@@ -45,8 +47,11 @@ public class UFOLocationService extends Service {
 
 				for (Reporter reporter : reporters) {
 					// TODO: Pass loc to reporter
-					reporter.report(0);
+					reporter.report(n);
 				}
+
+				n++;
+
 				try {
 					sleep(1000);
 				} catch (InterruptedException e) {
