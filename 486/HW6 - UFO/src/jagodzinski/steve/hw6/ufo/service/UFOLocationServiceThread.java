@@ -4,6 +4,7 @@ import jagodzinski.steve.hw6.ufo.service.UFOLocationService.Reporter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
@@ -73,9 +74,10 @@ public class UFOLocationServiceThread extends Thread {
 
 	private String getJSON(final HttpResponse response) {
 		HttpEntity entity = response.getEntity();
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		OutputStream out = new ByteArrayOutputStream();
 		try {
 			entity.writeTo(out);
+			out.close();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
