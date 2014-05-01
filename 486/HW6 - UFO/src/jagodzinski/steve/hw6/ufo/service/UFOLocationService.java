@@ -1,5 +1,7 @@
 package jagodzinski.steve.hw6.ufo.service;
 
+import jagodzinski.steve.hw6.ufo.model.UFOPosition;
+
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -34,7 +36,7 @@ public class UFOLocationService extends Service {
 	}
 
 	public interface Reporter {
-		void report(String json);
+		void report(List<UFOPosition> ufoPositions);
 	}
 
 	public class UFOLocationServiceBinder extends Binder {

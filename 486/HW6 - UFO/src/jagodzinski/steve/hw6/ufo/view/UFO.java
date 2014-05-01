@@ -2,9 +2,13 @@ package jagodzinski.steve.hw6.ufo.view;
 
 
 import jagodzinski.steve.hw6.ufo.R;
+import jagodzinski.steve.hw6.ufo.model.UFOPosition;
 import jagodzinski.steve.hw6.ufo.service.UFOLocationService;
 import jagodzinski.steve.hw6.ufo.service.UFOLocationService.Reporter;
 import jagodzinski.steve.hw6.ufo.service.UFOLocationService.UFOLocationServiceBinder;
+
+import java.util.List;
+
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -62,11 +66,11 @@ public class UFO extends Activity {
 
 	private Reporter reporter = new Reporter() {
 		@Override
-		public void report(final String json) {
+		public void report(final List<UFOPosition> ufoPositions) {
 			runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
-					Log.d("MainActivity reporter", json);
+					Log.d("MainActivity reporter", ufoPositions.toString());
 				}
 			});
 		}

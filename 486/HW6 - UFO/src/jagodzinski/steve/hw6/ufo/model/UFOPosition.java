@@ -8,6 +8,10 @@ public class UFOPosition implements Parcelable {
 	private double lat;
 	private double lon;
 
+	public UFOPosition() {
+
+	}
+
 	public int getShipNumber() {
 		return shipNumber;
 	}
