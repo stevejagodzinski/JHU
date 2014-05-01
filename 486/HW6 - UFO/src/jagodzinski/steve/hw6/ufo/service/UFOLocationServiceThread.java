@@ -49,18 +49,9 @@ public class UFOLocationServiceThread extends Thread {
 
 			if (!isInvasionComplete(response)) {
 				String json = getJSON(response);
-
-				for (Reporter reporter : reporters) {
-					reporter.report(json);
-				}
-
+				notifyReporters(json);
 				requestNumber++;
-
-				try {
-					sleep(1000);
-				} catch (InterruptedException e) {
-					interrupt();
-				}
+				sleep();
 			} else {
 				interrupt();
 			}
@@ -89,5 +80,19 @@ public class UFOLocationServiceThread extends Thread {
 			throw new RuntimeException(e);
 		}
 		return out.toString();
+	}
+
+	private void notifyReporters(String json) {
+		for (Reporter reporter : reporters) {
+			reporter.report(json);
+		}
+	}
+
+	private void sleep() {
+		try {
+			sleep(1000);
+		} catch (InterruptedException e) {
+			interrupt();
+		}
 	}
 }
