@@ -8,8 +8,10 @@ import jagodzinski.steve.hw6.ufo.service.UFOLocationService.Reporter;
 import jagodzinski.steve.hw6.ufo.service.UFOLocationService.UFOLocationServiceBinder;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -27,8 +29,12 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 public class UFO extends Activity {
@@ -39,12 +45,18 @@ public class UFO extends Activity {
 	private UFOLocationServiceBinder serviceBinder;
 
 	private LatLngBounds bounds = new LatLngBounds.Builder().include(new LatLng(38.9073, -77.0365)).build();
-	private Map<Integer, LatLng> shipLocations = new HashMap<Integer, LatLng>();
+	private Map<Integer, Marker> shipMarkers = new HashMap<Integer, Marker>();
+
+	private BitmapDescriptor ufoIcon;
+	private int cameraPadding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ufo);
+
+		ufoIcon = BitmapDescriptorFactory.fromResource(R.drawable.red_ufo);
+		cameraPadding = (int) getResources().getDimension(R.dimen.camera_padding);
     }
 
 	@Override
@@ -102,20 +114,50 @@ public class UFO extends Activity {
 		return success;
 	}
 
-	private void updateShipLocations(final List<UFOPosition> ufoPositions) {
-		for (UFOPosition ufoPosition : ufoPositions) {
-			LatLng previousPosition = shipLocations.get(ufoPosition.getShipNumber());
-			LatLng currentPosition = new LatLng(ufoPosition.getLat(), ufoPosition.getLon());
-			shipLocations.put(ufoPosition.getShipNumber(), currentPosition);
-			bounds = bounds.including(currentPosition);
+	private void handleShipLocationUpdates(final List<UFOPosition> ufoPositions) {
+		removeNoLongerTrackedShipMarkers(ufoPositions);
 
-			if (previousPosition != null) {
-				googleMap.addPolyline(new PolylineOptions().color(Color.BLUE).width(getResources().getDimension(R.dimen.path_width)).add(previousPosition)
-						.add(currentPosition));
-			}
+		for (UFOPosition ufoPosition : ufoPositions) {
+			Marker previousMarker = shipMarkers.get(ufoPosition.getShipNumber());
+			LatLng currentPosition = new LatLng(ufoPosition.getLat(), ufoPosition.getLon());
+
+			drawShipPath(previousMarker == null ? null : previousMarker.getPosition(), currentPosition);
+			updateMarkerLocation(ufoPosition.getShipNumber(), currentPosition);
+
+			bounds = bounds.including(currentPosition);
 		}
 
-		googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, (int) getResources().getDimension(R.dimen.camera_padding)));
+		googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, cameraPadding));
+	}
+
+	private void removeNoLongerTrackedShipMarkers(final List<UFOPosition> ufoPositions) {
+		Set<Integer> shipsToRemove = new HashSet<Integer>(shipMarkers.keySet());
+
+		for (UFOPosition ufoPosition : ufoPositions) {
+			shipsToRemove.remove(ufoPosition.getShipNumber());
+		}
+
+		for (Integer shipToRemove : shipsToRemove) {
+			shipMarkers.get(shipToRemove).remove();
+			shipMarkers.remove(shipsToRemove);
+		}
+	}
+
+	private void updateMarkerLocation(final int shipNumber, final LatLng currentPosition) {
+		Marker shipMarker = shipMarkers.get(shipNumber);
+		if (shipMarker == null) {
+			shipMarker = googleMap.addMarker(new MarkerOptions().icon(ufoIcon).position(currentPosition));
+			shipMarkers.put(shipNumber, shipMarker);
+		} else {
+			shipMarker.setPosition(currentPosition);
+		}
+	}
+
+	private void drawShipPath(final LatLng previousPosition, final LatLng currentPosition) {
+		if (previousPosition != null) {
+			googleMap.addPolyline(new PolylineOptions().color(Color.BLUE).width(getResources().getDimension(R.dimen.path_width)).add(previousPosition)
+					.add(currentPosition));
+		}
 	}
 
 	private ServiceConnection serviceConnection = new ServiceConnection() {
@@ -137,7 +179,7 @@ public class UFO extends Activity {
 			runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
-					updateShipLocations(ufoPositions);
+					handleShipLocationUpdates(ufoPositions);
 				}
 			});
 		}
