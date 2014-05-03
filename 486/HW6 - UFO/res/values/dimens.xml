@@ -4,4 +4,6 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
+    <dimen name="path_width">8dp</dimen>
+    <dimen name="camera_padding">50dp</dimen>
 </resources>
