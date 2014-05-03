@@ -1,21 +1,17 @@
 package jagodzinski.steve.hw6.ufo.service;
 
-import jagodzinski.steve.hw6.ufo.model.UFOPosition;
-
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import android.app.Service;
 import android.content.Intent;
-import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
-public class UFOLocationService extends Service {
+public class UFOLocationServiceImpl extends Service {
 
 	private Thread serviceThread;
-	private List<Reporter> reporters = new CopyOnWriteArrayList<Reporter>();
-	private IBinder binder = new UFOLocationServiceBinder();
+	private List<UFOLocationServiceReporter> reporters = new CopyOnWriteArrayList<UFOLocationServiceReporter>();
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -35,17 +31,15 @@ public class UFOLocationService extends Service {
 		super.onDestroy();
 	}
 
-	public interface Reporter {
-		void report(List<UFOPosition> ufoPositions);
-	}
-
-	public class UFOLocationServiceBinder extends Binder {
-		public void addReporter(Reporter reporter) {
+	private UFOLocationService.Stub binder = new UFOLocationService.Stub() {
+		@Override
+		public void add(UFOLocationServiceReporter reporter) {
 			reporters.add(reporter);
 		}
 
-		public void removeReporter(Reporter reporter) {
+		@Override
+		public void remove(UFOLocationServiceReporter reporter) {
 			reporters.remove(reporter);
 		}
-	}
+	};
 }

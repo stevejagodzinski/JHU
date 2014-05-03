@@ -1,7 +1,6 @@
 package jagodzinski.steve.hw6.ufo.service;
 
 import jagodzinski.steve.hw6.ufo.model.UFOPosition;
-import jagodzinski.steve.hw6.ufo.service.UFOLocationService.Reporter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -21,18 +20,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.os.RemoteException;
 import android.util.Log;
 
 public class UFOLocationServiceThread extends Thread {
 	private static final String URI = "http://javadude.com/aliens/%d.json";
 
-	private final List<Reporter> reporters;
+	private final List<UFOLocationServiceReporter> reporters;
 
 	private HttpClient httpclient;
 
 	private int requestNumber = 1;
 
-	public UFOLocationServiceThread(final List<Reporter> reporters) {
+	public UFOLocationServiceThread(final List<UFOLocationServiceReporter> reporters) {
 		this.reporters = reporters;
 		init();
 	}
@@ -122,8 +122,12 @@ public class UFOLocationServiceThread extends Thread {
 	}
 
 	private void notifyReporters(final List<UFOPosition> ufoPositions) {
-		for (Reporter reporter : reporters) {
-			reporter.report(ufoPositions);
+		for (UFOLocationServiceReporter reporter : reporters) {
+			try {
+				reporter.report(ufoPositions);
+			} catch (RemoteException e) {
+				Log.e("UFOLocationServiceThread", "Error notifying remote bound client.", e);
+			}
 		}
 	}
 

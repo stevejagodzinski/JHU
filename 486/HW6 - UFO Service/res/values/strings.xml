@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">jagodzinski.steve.hw6.ufo.service</string>
+	<string name="ufo_location_service_permission_label">UFO Location Service Permission</string>
+	<string name="ufo_location_service_permission_description">Permission to access the UFO Location Service</string>    
+</resources>

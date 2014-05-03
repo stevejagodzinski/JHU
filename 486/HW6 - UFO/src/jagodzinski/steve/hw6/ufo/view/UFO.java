@@ -4,8 +4,7 @@ package jagodzinski.steve.hw6.ufo.view;
 import jagodzinski.steve.hw6.ufo.R;
 import jagodzinski.steve.hw6.ufo.model.UFOPosition;
 import jagodzinski.steve.hw6.ufo.service.UFOLocationService;
-import jagodzinski.steve.hw6.ufo.service.UFOLocationService.Reporter;
-import jagodzinski.steve.hw6.ufo.service.UFOLocationService.UFOLocationServiceBinder;
+import jagodzinski.steve.hw6.ufo.service.UFOLocationServiceReporter;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,6 +20,7 @@ import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.util.Log;
 import android.view.Menu;
 
@@ -42,7 +42,7 @@ public class UFO extends Activity {
 	private static final int GOOGLE_PLAY_SETUP = 42;
 
 	private GoogleMap googleMap;
-	private UFOLocationServiceBinder serviceBinder;
+	private UFOLocationService serviceBinder;
 
 	private LatLngBounds bounds = new LatLngBounds.Builder().include(new LatLng(38.9073, -77.0365)).build();
 	private Map<Integer, Marker> shipMarkers = new HashMap<Integer, Marker>();
@@ -62,7 +62,9 @@ public class UFO extends Activity {
 	@Override
 	protected void onStart() {
 		Log.d("UFO", "onStart");
-		bindService(new Intent(this, UFOLocationService.class), serviceConnection, Context.BIND_AUTO_CREATE);
+		if (!bindService(new Intent("jagodzinski.steve.hw6.ufo.service.UFOLocationService"), serviceConnection, Context.BIND_AUTO_CREATE)) {
+			Log.e("MainActivity", "Failed to bind to UFOLocationService");
+		}
 		super.onStart();
 	}
 
@@ -75,7 +77,15 @@ public class UFO extends Activity {
 	@Override
 	protected void onStop() {
 		Log.d("UFO", "onStop");
-		serviceBinder.removeReporter(reporter);
+
+		try {
+			if (serviceBinder != null) {
+				serviceBinder.remove(reporter);
+			}
+		} catch (RemoteException e) {
+			Log.e("MainActivity", "Unable to remove self as reporter from UFOLocationService", e);
+		}
+
 		unbindService(serviceConnection);
 		super.onStop();
 	}
@@ -168,14 +178,19 @@ public class UFO extends Activity {
 
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
-			UFO.this.serviceBinder = (UFOLocationServiceBinder) service;
-			UFO.this.serviceBinder.addReporter(reporter);
+			UFO.this.serviceBinder = UFOLocationService.Stub.asInterface(service);
+
+			try {
+				UFO.this.serviceBinder.add(reporter);
+			} catch (RemoteException e) {
+				Log.e("MainActivity", "Unable to add self as reporter to UFOLocationService", e);
+			}
 		}
 	};
 
-	private Reporter reporter = new Reporter() {
+	private UFOLocationServiceReporter reporter = new UFOLocationServiceReporter.Stub() {
 		@Override
-		public void report(final List<UFOPosition> ufoPositions) {
+		public void report(final List<UFOPosition> ufoPositions) throws RemoteException {
 			runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
@@ -184,5 +199,4 @@ public class UFO extends Activity {
 			});
 		}
 	};
-
 }
