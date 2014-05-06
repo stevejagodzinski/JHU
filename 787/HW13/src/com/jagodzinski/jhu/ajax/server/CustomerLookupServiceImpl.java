@@ -106,6 +106,9 @@ public class CustomerLookupServiceImpl extends RemoteServiceServlet implements C
 
 		double averageBalance = (customer1.getAccountBalance() + customer2.getAccountBalance()) / 2.0;
 
+		// Bank profits on fractions of a cent
+		averageBalance = Math.floor(averageBalance * 100) / 100.0;
+
 		customer1.setAccountBalance(averageBalance);
 		customer2.setAccountBalance(averageBalance);
 
