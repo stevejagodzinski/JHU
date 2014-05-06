@@ -43,7 +43,7 @@ public class CustomerRPC implements EntryPoint
 
 		Button redistributeButton = new Button("Redistribute");
 		redistributionResultHTML = new HTML("<i>Redistribution Result Will Go Here</i>");
-		redistributeButton.addClickHandler(new Button3Handler());
+		redistributeButton.addClickHandler(new RedistributeButtonHandler());
 		RootPanel.get("redistribute").add(redistributeButton);
 		RootPanel.get("redistribute").add(redistributionResultHTML);
 	}
@@ -66,7 +66,7 @@ public class CustomerRPC implements EntryPoint
 		}
 	}
 
-	private class Button3Handler implements ClickHandler
+	private class RedistributeButtonHandler implements ClickHandler
 	{
 		@Override
 		public void onClick(ClickEvent event)

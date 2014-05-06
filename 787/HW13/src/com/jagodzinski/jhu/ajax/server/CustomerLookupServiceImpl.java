@@ -99,7 +99,7 @@ public class CustomerLookupServiceImpl extends RemoteServiceServlet implements C
 	}
 
 	@Override
-	public List<Customer> redistribute(int custId1, int custId2)
+	public List<Customer> redistribute(Integer custId1, Integer custId2)
 	{
 		Customer customer1 = customers.get(custId1);
 		Customer customer2 = customers.get(custId2);

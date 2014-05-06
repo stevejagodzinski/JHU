@@ -12,5 +12,5 @@ public interface CustomerService extends RemoteService
 
 	Customer getPoorestCustomer();
 
-	List<Customer> redistribute(int custId1, int custId2);
+	List<Customer> redistribute(Integer custId1, Integer custId2);
 }

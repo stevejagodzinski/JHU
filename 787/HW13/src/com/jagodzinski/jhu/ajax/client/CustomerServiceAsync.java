@@ -10,5 +10,5 @@ public interface CustomerServiceAsync
 
 	void getRichestCustomer(AsyncCallback<Customer> callback);
 
-	void redistribute(int custId1, int custId2, AsyncCallback<List<Customer>> callback);
+	void redistribute(Integer custId1, Integer custId2, AsyncCallback<List<Customer>> callback);
 }
