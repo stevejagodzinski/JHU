@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+              http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         version="2.5"
+         xmlns="http://java.sun.com/xml/ns/javaee">
+
+    <!-- Use the URL http://hostname/appname/gwtrpc/data-service
+       for the RemoteServiceServlet that provides the 
+       DataService implementation. The "gwtrpc" part of the URL
+       is generated automatically by GWT Eclipse plugin: the project name
+       in all lowercase. The "data-service" part matches
+       the @RemoteServiceRelativePath annotation in the
+       DataService interface. -->
+  <servlet>
+    <servlet-name>
+      Servlet that Provides CustomerLookupService
+    </servlet-name>
+    <servlet-class>
+      com.jagodzinski.jhu.ajax.server.CustomerLookupServiceImpl
+    </servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>
+      Servlet that Provides CustomerLookupService
+    </servlet-name>
+    <url-pattern>/customerRPC/customer-service</url-pattern>
+  </servlet-mapping>
+
+  <!-- If the URL gives a directory but not a filename,
+       try GwtRpc.html. If this file is not found,
+       the result is server-specific (e.g., a  
+       directory listing or a 404 error).  
+  -->
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
+  
+  <!-- Default page to serve -->
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
+
+</web-app>
