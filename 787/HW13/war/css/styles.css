@@ -25,3 +25,17 @@ legend {
   border: 1px solid #999999;
   padding: 3px 2px;
 }
+
+.widgetContent {
+	width:100%;
+}
+
+.gwt-HTML {
+	display: inline-block;
+	float: right;
+}
+
+.gwt-Button {
+	display: inline-block;
+	float: left;
+}
