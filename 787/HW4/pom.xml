@@ -1,9 +1,9 @@
 <project>
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.jagodzinski</groupId>
-    <artifactId>jhu-cs-787</artifactId>
+    <artifactId>jhu-cs-787-hw-04</artifactId>
     <packaging>war</packaging>
-    <version>4.0.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
